@@ -18,7 +18,7 @@ The aim is to create dice with intransitive cycles as long as possible by using
 
 ### Partioning Muñoz-Perera dice
 
-Muñoz-Perera's formula for $N ≥ 3$: "To obtain a set of $N$ fair intransitive dice of $N$ faces it is enough to set the values $v_{n,j} = (j - 1) * N + (n - j) \% (N) + 1$ for $n,j=1,...,N$. Using this expression, it can be verified that $P(D_m < D_n) = 0.5 + 1/(2*N) - ((n-m)\%N)/(N*N)$. So each die beats $⌊N/2-1⌋$ dice in the set."
+Muñoz-Perera's formula for $N ≥ 3$: "To obtain a set of $N$ fair intransitive dice of $N$ faces it is enough to set the values $v_{n,j} = (j - 1) * N + (n - j) mod (N) + 1$ for $n,j=1,...,N$. Using this expression, it can be verified that $P(D_m < D_n) = 0.5 + 1 / (2 * N) - ((n - m) mod (N)) / (N * N)$. So each die beats $⌊N/2-1⌋$ dice in the set."
 
 The path $(D_N,..., D_2, D_1, D_N)$ is always intransitive for those Muñoz-Perera dice, since $P(D_N > D_{N-1}) > 0.5,..., P(D_2 > D_1) > 0.5, P(D_1 > D_N) > 0.5$ for these dice (see ["A generalization of intransitive dice" by Adrian Muñoz-Perera](https://pereradrian.github.io/doc/adrian_munnoz_perera_generalized_intransitive_dice_2024.pdf)).
 
@@ -34,12 +34,12 @@ To construct long intransitive cycles, we start with a set of known intransitive
 
 Let $D_i$ and $D_k$ be two $M$-sided dice with $P(D_i>D_k) > 0.5$, where $D_i[m]$ is the m-th value of die $D_i$ and
 $D_k[m]$ is the m-th value of die $D_k$, with $0 ≤ m < M$ for $M$-sided dice. A new die $D_j$ can then be constructed with $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$:
-* If $D_i[m] > D_k[m]$, then $D_j[m] < D_i[m]$ to ensure that $D_i$ beats $D_j$. We choose $D_j[m] = (D_i[m] + D_k[m]) / 2$.
+* If $D_i[m] > D_k[m]$, then $D_j[m] < D_i[m]$ to ensure that $D_i$ beats $D_j$. We choose $D_j[m] = ⌊(D_i[m] + D_k[m]) / 2⌋$.
 * If $D_i[m] < D_k[m]$, then $D_j[m] > D_k[m]$ to ensure that $D_j$ beats $D_k$. We choose $D_j[m] = D_k[m] + 1$.
 
 We repeat this process iteratively until the cycle length reaches the desired limit. If the difference between two dice values is too small to identify a new die in the cycle, we simply multiply all dice values by a constant factor greater than one, for example by a factor of two. Multiplying all dice values by a constant factor or adding a constant offset to all values does not change the probabilities of the dice. This enables us to enlarge a given intransitive cycle by adding new dice ad infinitum. As far as I could test, this simple algorithm can easily generate millions of intransitive dice, starting with six-sided Oskar dice, Grime dice or $M$-sided Muñoz-Perera dice (or probably with any other intransitive dice).
 
-**Conjecture: For any fixed values of $N$ and $M$ greater than 2, there exist sets of $N$ $M$-sided dice forming a strict intransitive cycle.**
+**Conjecture: For any fixed values of $N$ and $M$ greater than $2$, there exist sets of $N$ $M$-sided dice forming a strict intransitive cycle.**
 
 Again, I do not have a direct proof of this conjecture. A proof might be deducable from the literature. ChatGPT created a [proof sketch](doc/intransitivity_fixed_M_arbitrary_cycle.md).
 
