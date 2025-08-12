@@ -32,11 +32,11 @@ Two simple invariants we will use:
 
 Let $A=(a_1,\dots,a_M)$ and $B=(b_1,\dots,b_M)$ be two dice with $A\succ B$.
 
-Define the empirical cumulative distribution functions (CDFs):
+Define the empirical cumulative distribution functions (CDFs), where $cnt \{i: a_i\le t\}$ counts the number of elements with $a_i\le t$:
 
 $$
-F_A(t)=\frac{1}{M} \# \{i: a_i\le t\},\qquad
-F_B(t)=\frac{1}{M} \# \{j: b_j\le t\}.
+F_A(t)=\frac{1}{M} cnt \{i: a_i\le t\},\qquad
+F_B(t)=\frac{1}{M} cnt \{j: b_j\le t\}.
 $$
 
 **Lemma 2.1 (Quantile separation).** If $A\succ B$, then there exists a threshold $t\in\mathbb R$ such that
@@ -118,8 +118,7 @@ $$
 $$
 
 $$
-m_L+m_M+m_H=M.
-\tag{A}
+m_L+m_M+m_H=M. \qquad (A)
 $$
 
 Because $p_A$ and $p_B$ are strictly positive (indeed bounded away from 0 by the CDF crossing), the feasible region of (A) in $\mathbb R^3_{\ge 0}$ has **non-empty interior**. Hence we can pick **integer** $(m_L,m_M,m_H)$ satisfying (A). (E.g., take $m_M$ a positive fraction of $M$ so that $m_M p_A$ and $m_M p_B$ both contribute a few percentage points above $1/2$, then split the remaining faces between $m_L$ and $m_H$ to clear the two half-thresholds.)
