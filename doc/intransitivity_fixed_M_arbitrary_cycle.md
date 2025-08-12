@@ -32,11 +32,11 @@ Two simple invariants we will use:
 
 Let $A=(a_1,\dots,a_M)$ and $B=(b_1,\dots,b_M)$ be two dice with $A\succ B$.
 
-Define the empirical CDFs
+Define the empirical cumulative distribution functions (CDFs):
 
 $$
-F_A(t)=\frac{1}{M}\#\{i: a_i\le t\},\qquad
-F_B(t)=\frac{1}{M}\#\{j: b_j\le t\}.
+F_A(t)=\frac{1}{M} \# \{i: a_i\le t\},\qquad
+F_B(t)=\frac{1}{M} \# \{j: b_j\le t\}.
 $$
 
 **Lemma 2.1 (Quantile separation).** If $A\succ B$, then there exists a threshold $t\in\mathbb R$ such that
@@ -47,7 +47,7 @@ $$
 
 Equivalently, the proportion of $A$-faces $\le t$ is strictly **smaller** than the proportion of $B$-faces $\le t$. (In particular, taking $t$ at a strict crossing, more than half of $B$-faces lie below $t$, while less than half of $A$-faces lie below $t$.)
 
-*Proof sketch.* $\mathbb P[A>B]$ is (up to normalization) the Mann–Whitney $U$-statistic comparing samples $\{a_i\}$ and $\{b_j\}$. If $U>1/2$, the empirical CDFs cannot be everywhere ordered $F_A\ge F_B$; hence there exists $t$ with $F_A(t)<F_B(t)$. $\square$
+*Proof sketch.* $\mathbb P[A>B]$ is (up to normalization) the Mann–Whitney $U$-statistic comparing samples $\{a_i\}$ and $\{b_j\}$. If $U>1/2$, the empirical CDFs cannot be everywhere ordered $F_A\ge F_B$; hence there exists $t$ with $F_A(t)<F_B(t)$.
 
 We will use such a threshold $t$ to place faces of a **new** die on carefully chosen “levels” just below or above $t$.
 
@@ -110,8 +110,14 @@ $$
 Thus it suffices to choose **integer counts** $(m_L,m_M,m_H)$ such that
 
 $$
-\frac{m_L}{M} + \frac{m_M}{M}\,p_A \;>\; \tfrac12,\qquad
-\frac{m_H}{M} + \frac{m_M}{M}\,p_B \;>\; \tfrac12,\qquad
+\frac{m_L}{M} + \frac{m_M}{M}\,p_A \;>\; \tfrac12,
+$$
+
+$$
+\frac{m_H}{M} + \frac{m_M}{M}\,p_B \;>\; \tfrac12,
+$$
+
+$$
 m_L+m_M+m_H=M.
 \tag{A}
 $$
@@ -194,5 +200,5 @@ Because the constraints are *linear* in the integer counts and the feasible regi
 
 ## 9. What’s New Here
 
-* The **fixed-$M$** “arbitrarily long cycle” statement follows from a simple, explicit **3-level insertion lemma** plus affine invariance.
-* To the best of our knowledge (as of this write-up), published constructions that realize *arbitrary tournaments* typically let the **number of sides grow with $n$**. The lemma above gives a direct, elementary way to keep **$M$ fixed** and grow $n$ arbitrarily, which seems publishable as a short note.
+* The "arbitrarily long cycle" statement with fixed $M$ follows from a simple, explicit **3-level insertion lemma** plus affine invariance.
+* To the best of our knowledge (as of this write-up), published constructions that realize *arbitrary tournaments* typically let the number of sides grow with $n$. The lemma above gives a direct, elementary way to keep $M$ fixed and grow $n$ arbitrarily, which seems publishable as a short note.
