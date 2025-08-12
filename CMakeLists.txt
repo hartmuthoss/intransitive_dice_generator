@@ -2,7 +2,7 @@
 # CMakeLists.txt for project intransive_dice
 ####################################################
 cmake_minimum_required(VERSION 3.28)
-project(intransive_dice)
+project(intransive_dice_generator)
 
 # Intransitive dice library
 include_directories(src)

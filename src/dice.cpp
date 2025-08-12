@@ -14,8 +14,8 @@
 // Probability P(other > *this) = count_beats(other)[1] / (double)(NumSides * NumSides).
 std::array<size_t, 2> Die::count_beats(const Die& other) const
 {
-    const std::vector<int>& this_values = values();
-    const std::vector<int>& other_values = other.values();
+    const std::vector<DieValueT>& this_values = values();
+    const std::vector<DieValueT>& other_values = other.values();
     assert(this_values.size() == other_values.size());
     std::array<size_t, 2> beat_cnt = { 0, 0 };
     for (size_t n = 0; n < this_values.size(); n++)
@@ -37,8 +37,8 @@ double Die::probability_to_beat(Die& other)
     assert(values().size() == other.values().size());
     sort_values();
     other.sort_values();
-    const std::vector<int>& this_values = values();
-    const std::vector<int>& other_values = other.values();
+    const std::vector<DieValueT>& this_values = values();
+    const std::vector<DieValueT>& other_values = other.values();
     assert(this_values.size() == other_values.size());
     size_t beat_cnt = 0;
     for (size_t n = 0; n < this_values.size(); n++)
@@ -52,16 +52,33 @@ void Die::sort_values()
 {
     if (!values_sorted)
     {
-        std::sort(values().begin(), values().end(), std::less<int>());
+        std::sort(values().begin(), values().end(), std::less<DieValueT>());
         values_sorted = true;
     }
 }
 
+// Add values elementwise, i.e. the returned die has die.values()[0] = this->values()[0] + x[0], die.values()[1] = this->values()[1] + x[1], and so on
+Die Die::add_values(const std::vector<DieValueT>& x) const
+{
+    std::vector<DieValueT> out_values = values();
+    assert(out_values.size() == x.size());
+    for (size_t n = 0; n < out_values.size(); n++)
+        out_values[n] += x[n];
+    return Die(out_values);
+}
+
+// Replaces all values v_i by value v_i = factor * v_i + offset in all sides of this die
+void Die::mul_add_values(DieValueT factor, DieValueT offset)
+{
+    for (size_t n = 0; n < m_values.size(); n++)
+        m_values[n] = factor * m_values[n] + offset;
+}
+
 // Initializing constructor given the values of two single dice by two vectors
-MultiDie::MultiDie(const std::vector<std::vector<int>>& die_values)
+MultiDie::MultiDie(const std::vector<std::vector<DieValueT>>& die_values)
 {
     assert(die_values.size() > 0);
-    for (int n = 1; n < die_values.size(); n++)
+    for (size_t n = 1; n < die_values.size(); n++)
     {
         assert(die_values[n].size() > 0 && die_values[n - 1].size() == die_values[n].size());
     }
@@ -72,16 +89,37 @@ MultiDie::MultiDie(const std::vector<std::vector<int>>& die_values)
 std::string MultiDie::print(void) const
 {
     std::stringstream str;
-    for (int n = 0; n < m_die_values.size(); n++)
+    for (size_t n = 0; n < m_die_values.size(); n++)
         str << (n > 0 ? ", " : "") << "(" << DiceUtil::print(m_die_values[n], 3) << " )";
     return str.str();
 }
 
 // Initializes the values of this multi die given the values (eyes) of each single die
-void MultiDie::init(const std::vector<std::vector<int>> die_values)
+void MultiDie::init(const std::vector<std::vector<DieValueT>> die_values)
 {
     m_die_values = die_values;
-    DiceUtil::generate_sums_recursively(m_die_values, 0, 0, m_values);
+    DiceUtil::generate_sums_recursively(m_die_values, 0, (DieValueT)0, m_values);
+}
+
+// Replaces all values v_ij by value v_ij = factor * v_ij + offset in all dice
+template <typename DieType> void DiceSetT<DieType>::mul_add_values(DieValueT factor, DieValueT offset)
+{
+    for (size_t n = 0; n < m_dice.size(); n++)
+        m_dice[n].mul_add_values(factor, offset);
+}
+
+// Returns the minimum of all values of all dice
+template <typename DieType> DieValueT DiceSetT<DieType>::min_die_value(void) const
+{
+    assert(m_dice.size() > 0 && m_dice[0].values().size() > 0);
+    DieValueT min_val = m_dice[0].values()[0];
+    for (size_t n = 0; n < m_dice.size(); n++)
+    {
+        const std::vector<DieValueT>& values = m_dice[n].values();
+        for (size_t m = 0; m < values.size(); m++)
+            min_val = std::min<DieValueT>(values[m], min_val);
+    }
+    return min_val;
 }
 
 // Searches and returns a list of intransitive paths, each path contains a list of intransitive dice.
@@ -145,7 +183,7 @@ template <typename DieType> const DicePathList& DiceSetT<DieType>::search_intran
 }
 
 // Returns true, if this set of dice is intransitive, i.e. there is at least one intransitive path.
-template <typename DieType> bool DiceSetT<DieType>::is_intransitive()
+template <typename DieType> bool DiceSetT<DieType>::has_intransitive_paths()
 {
     if (!m_intransitive_paths_computed)
         search_intransitive_paths();
@@ -182,19 +220,27 @@ template <typename DieType> std::string DiceSetT<DieType>::print_path_probabilit
     }
     path_is_intransitive = (probability_flag_sum == ((int)path.size() - 1) || probability_flag_sum == (1 - (int)path.size()));
     str << " (" << (path_is_intransitive ? "" : "NOT an ") << "intransitive path" << path.print_bonus(", ") << ")";
-
     if (warn_if_path_is_not_intransitive)
     {
         assert(path_is_intransitive); // debug version (assertion)
         if (!path_is_intransitive)   // release version
         {
             std::cerr << std::endl << "## WARNING Path " << path.print() << " in " << name() << " is NOT intransitive, expected an intransitive path!" << std::endl;
+            std::cerr << "## WARNING " << name() << ": " << str.str() << std::endl;
             std::cerr << "## Press ENTER to continue..." << std::endl;
             getchar();
         }
-
     }
+    return str.str();
+}
 
+// Prints the dice name, values and beat probabilities P(D_i>D_j) for all i, j in a given path.
+template <typename DieType> std::string DiceSetT<DieType>::print_path_probabilities_x(const DicePath& path, bool warn_if_path_is_not_intransitive)
+{
+    std::stringstream str;
+    bool is_intransitive = false;
+    str << name() << ":" << std::endl << print_dice();
+    str << print_path_probabilities(path, is_intransitive, warn_if_path_is_not_intransitive) << std::endl;
     return str.str();
 }
 

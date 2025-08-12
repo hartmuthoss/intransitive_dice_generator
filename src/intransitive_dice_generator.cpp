@@ -1,12 +1,23 @@
-﻿// Search for and generation of intransitiv dice.
+﻿// Generator for intransitiv dice.
 // See https://en.wikipedia.org/wiki/Intransitive_dice and README.md for details.
 #include "dice.h"
 #include "dice_generator.h"
 
+// Print dice die_i, die_j, die_k and their probabilities P(Di>Dk), P(Di>Dj), P(Dj>Dk).
+void print_dice_ijk_probabilities(const Die& die_i, const Die& die_j, const Die& die_k)
+{
+    Die Di = die_i, Dj = die_j, Dk = die_k;
+    double pDiDk = Di.probability_to_beat(Dk);
+    double pDiDj = Di.probability_to_beat(Dj);
+    double pDjDk = Dj.probability_to_beat(Dk);
+    std::cout << "Di = (" << die_i.print() << ")" << std::endl << "Dj = (" << die_j.print() << ")" << std::endl << "Dk = (" << die_k.print() << ")" << std::endl;
+    std::cout << "P(Di>Dk) = " << std::fixed << std::setprecision(3) << pDiDk << ", P(Di>Dj) = " << pDiDj << ", P(Dj>Dk) = " << pDjDk << std::endl << std::endl;
+}
+
 // Prints the intransitive paths of a set of dice
 template <typename DiceSetType> void print_intransitive_paths(DiceSetType& dice_set, const DicePathList& intransitive_paths, int max_paths = INT_MAX, int max_paths_to_print = 10)
 {
-  if (dice_set.is_intransitive())
+  if (dice_set.has_intransitive_paths())
     std::cout << dice_set.name() << " is intransitive and has " << intransitive_paths.size() << " intransitive paths"
       << (intransitive_paths.size() >= max_paths ? " (or more, path limit reached)" : "") << ": " << intransitive_paths.print(max_paths_to_print) << std::endl;
   else
@@ -32,10 +43,8 @@ template <typename DiceSetType> void search_print_intransitive_paths(DiceSetType
 // Examples and tests of intransitive dice and dice tuples
 int main(int argc, char** argv)
 {
-  std::cout << "Intransitive dice test started." << std::endl << std::endl;
+  std::cout << "Intransitive dice generator test started." << std::endl << std::endl;
 
-  // TODO: "The hunt for the 8. Oskar": Start with Oskar's dice and find an eight intransitive dice!
-  
   // Some well known examples of intransitive dice
   std::vector<DiceSet> dice_sets = {
     DiceGenerator::efron(),
@@ -72,10 +81,8 @@ int main(int argc, char** argv)
     DicePath dice_path = DiceGenerator::munnoz_perera_path(N);
     MultiDiceSet multi_dice_set = DiceGenerator::create_multi_dice_set_munnoz_perera(N, M);
     bool dice_path_is_intransitive = false, multi_dice_path_is_intransitive = false;
-    std::cout << dice_set.name() << ":" << std::endl << dice_set.print_dice();
-    std::cout << dice_set.print_path_probabilities(dice_path, dice_path_is_intransitive, true) << std::endl << std::endl;
-    std::cout << multi_dice_set.name() << ":" << std::endl << multi_dice_set.print_dice();
-    std::cout << multi_dice_set.print_path_probabilities(dice_path, multi_dice_path_is_intransitive, true) << std::endl << std::endl;
+    std::cout << dice_set.print_path_probabilities_x(dice_path, true) << std::endl;
+    std::cout << multi_dice_set.print_path_probabilities_x(dice_path, true) << std::endl;
   }
 
   // Now we partition the N N-sided Munnoz-Perera dice into N tuples of M-sided dice.
@@ -88,9 +95,7 @@ int main(int argc, char** argv)
       {
         DicePath dice_path = DiceGenerator::munnoz_perera_path(N);
         MultiDiceSet multi_dice_set = DiceGenerator::create_multi_dice_set_munnoz_perera(N, M);
-        bool dice_path_is_intransitive = false;
-        std::cout << multi_dice_set.name() << ":" << std::endl << multi_dice_set.print_dice();
-        std::cout << multi_dice_set.print_path_probabilities(dice_path, dice_path_is_intransitive, true) << std::endl << std::endl;
+        std::cout << multi_dice_set.print_path_probabilities_x(dice_path, true) << std::endl;
       }
     }
   }
@@ -98,28 +103,57 @@ int main(int argc, char** argv)
   // We may try to partition the N N-sided Munnoz-Perera dice into N dice tuples with a random number of sides in each tuple.
   // Example: Die D_n is one of the 14 14-sided Munnoz-Perera dice. D_n is partitioned into  dice { D_n1, D_n2, D_n3 }, and D_n1 has 3 sides, D_n2 has 6 sides, D_n3 has 5 sides.
   // Both the number of dice D_ni and their numbers of sides are choosen randomly (but all dice have at least 3 sides).
-  // A random partition into 3 or more sides breaks the intransitivity already for N = 6: A random partition of 6x6 Munnoz-Perera dice has no intransitive paths.
+  // A random partition into 3 or more sides breaks the intransitivity immediately, e.g. for N = 6: A random partition of 6x6 Munnoz-Perera dice has no intransitive paths.
   // std::mt19937 random_generator(0);
   // DiceSet dice_set = DiceGenerator::munnoz_perera(6);
   // DicePath dice_path = DiceGenerator::munnoz_perera_path(6);
   // MultiDiceSet random_multi_dice_set = DiceGenerator::create_multi_dice_set_munnoz_perera_random_split(6, random_generator);
-  // bool dice_path_is_intransitive = false;
-  // std::cout << dice_set.name() << ":" << std::endl << dice_set.print_dice();
-  // std::cout << dice_set.print_path_probabilities(dice_path, dice_path_is_intransitive, true) << std::endl << std::endl;
-  // std::cout << random_multi_dice_set.name() << ":" << std::endl << random_multi_dice_set.print_dice();
-  // std::cout << random_multi_dice_set.print_path_probabilities(dice_path, dice_path_is_intransitive, false) << std::endl << std::endl;
+  // std::cout << dice_set.print_path_probabilities_x(dice_path, true) << std::endl;
+  // std::cout << random_multi_dice_set.print_path_probabilities_x(dice_path, true) << std::endl;
   // search_print_intransitive_paths(random_multi_dice_set, max_paths, max_paths_to_print);
 
-  // Split 18 intransitive 18-sided Munnoz-Perera dice into 18 triples of 6-sided dice (and let the sum of 3 values in a triple win)
-  // Note: the graph search becomes extremely large, the graph is extremly time and memory consuming and may exceed system ressources!
-  // MultiDiceSet triple_dice_set = DiceGenerator::create_multi_dice_set_munnoz_perera(18);
-  // search_print_intransitive_paths(triple_dice_set, 1, max_paths_to_print);
+  // Start with Oskar dice and create longer cycles of intransitive dice
+  DiceSet oskar_dice = DiceGenerator::oskar();
+  DicePath oskar_dice_path({ 0, 1, 2, 3, 4, 5, 6, 0 });
+  std::cout << oskar_dice.print_path_probabilities_x(oskar_dice_path, true) << std::endl;
 
-  // Randomly select sets of 12 double dice from a matrix of 12 intransitive 12-sided dice
-  // std::vector<DoubleDiceSet> double_dice_sets = DiceGenerator::create_random_double_dice_sets_from_12x12(5);
-  // for (int n = 0; n < double_dice_sets.size(); n++)
-  //   search_print_intransitive_paths(double_dice_sets[n], max_paths, max_paths_to_print);
+  // Iteratively insert new dice D_j between D_i and D_(i+1), such that P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5.
+  // Start with a given set of dice and a given intransitive path, and repeat the process until
+  // the given max. number of dice are reached, or no new dice D_j can be found.
+  DiceSet oskar_extended("Extended Oskar dice", {});
+  DicePath oskar_extended_path;
+  size_t max_num_dice = 1000; // Tested with up to 10 million dice - feel free to create intransitive cycles with as many dice as desired.
+  if (DiceGenerator::extend_set_by_intransitive_dice_insertion(oskar_dice, oskar_dice_path, max_num_dice, oskar_extended, oskar_extended_path))
+      std::cout << oskar_extended.print_path_probabilities_x(oskar_extended_path, true) << std::endl;
+  else
+      std::cerr << "## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with oskar dice" << std::endl << std::endl;
 
-  std::cout << "Intransitive dice test finished." << std::endl;
+  // Create long cycles of intransitive dice by extending Grime dice
+  DiceSet grime_dice = DiceGenerator::grime();
+  DicePath grime_dice_path({ 0, 1, 2, 3, 4, 0 });
+  std::cout << grime_dice.print_path_probabilities_x(grime_dice_path, true) << std::endl;
+  DiceSet grime_extended("Extended Grime dice", {});
+  DicePath grime_extended_path;
+  if (DiceGenerator::extend_set_by_intransitive_dice_insertion(grime_dice, grime_dice_path, max_num_dice, grime_extended, grime_extended_path))
+      std::cout << grime_extended.print_path_probabilities_x(grime_extended_path, true) << std::endl;
+  else
+      std::cerr << "## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with grime dice" << std::endl << std::endl;
+
+
+  // Create long cycles of intransitive dice by extending N N-sided Munnoz-Perera dice (N >= 3)
+  for (size_t num_dice_sides = 3; num_dice_sides <= 48; num_dice_sides *= 2)
+  {
+      DiceSet  mp_dice = DiceGenerator::munnoz_perera(num_dice_sides);
+      DicePath mp_dice_path = DiceGenerator::munnoz_perera_path(num_dice_sides);
+      std::cout << mp_dice.print_path_probabilities_x(mp_dice_path, true) << std::endl;
+      DiceSet mp_extended("Extended Munnoz Perera " + std::to_string(num_dice_sides) + "-sided dice", {});
+      DicePath mp_extended_path;
+      if (DiceGenerator::extend_set_by_intransitive_dice_insertion(mp_dice, mp_dice_path, max_num_dice, mp_extended, mp_extended_path))
+          std::cout << mp_extended.print_path_probabilities_x(mp_extended_path, true) << std::endl;
+      else
+          std::cerr << "## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with " << num_dice_sides << " " << num_dice_sides << "-sided Munnoz Perera dice" << std::endl << std::endl;
+  }
+
+  std::cout << "Intransitive dice generator test finished." << std::endl;
   return 0;
 }

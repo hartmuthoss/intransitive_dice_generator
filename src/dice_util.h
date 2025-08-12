@@ -15,19 +15,19 @@ namespace DiceUtil
     bool is_palindrome(const std::string& str);
 
     // Generates all combinations of dice sums recursively
-    void generate_sums_recursively(const std::vector<std::vector<int>>& dice, size_t die_index, int current_sum, std::vector<int>& results);
+    template <typename T> void generate_sums_recursively(const std::vector<std::vector<T>>& dice, size_t die_index, T current_sum, std::vector<T>& results);
 
     // Formats a vector of integers into a string
-    std::string print(const std::vector<int>& vec);
+    template <typename T> std::string print(const std::vector<T>& vec);
 
     // Formats a vector of integers into a string
-    std::string print(const std::vector<int>& vec, int width);
+    template <typename T> std::string print(const std::vector<T>& vec, int width);
 
     // Formats a matrix (i.e. a vector of vectors of integers) into a string
-    std::string print(const std::vector<std::vector<int>>& matrix);
+    template <typename T> std::string print(const std::vector<std::vector<T>>& matrix);
 
     // Formats a matrix into a string
-    template <int N> std::string print(const std::array<std::array<int, N>, N>& matrix)
+    template <typename T, int N> std::string print(const std::array<std::array<T, N>, N>& matrix)
     {
         std::stringstream str;
         for (size_t i = 0; i < matrix.size(); i++)

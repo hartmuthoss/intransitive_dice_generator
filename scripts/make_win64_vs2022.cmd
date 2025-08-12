@@ -12,7 +12,7 @@ cmake --build . --clean-first --config Debug
 if %ERRORLEVEL% neq 0 ( @echo ERROR building intransive dice debug binaries & @pause )
 cmake --build . --clean-first --config Release
 if %ERRORLEVEL% neq 0 ( @echo ERROR building intransive dice release binaries & @pause )
-start "intransive_dice.sln" intransive_dice.sln
+start "intransive_dice_generator.sln" intransive_dice_generator.sln
 popd
 
 popd

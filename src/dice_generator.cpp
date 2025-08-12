@@ -60,13 +60,13 @@ namespace DiceGenerator
     // Note: Formula v_n,j = (j - 1) * N + (n - j) % (N) + 1 is replaced by v_n,j = (j - 1) * N + (N + n - j) % (N) + 1
     // to handle (n - j) % (N) correctly for all values of (n - j) < 0. 
     // MSVC calculates correctly ((-1 + 6) % 6) == 5, but incorrectly ((-1) % 6) == -1.
-    std::vector<std::vector<int>> munnoz_perera_matrix(int N)
+    std::vector<std::vector<DieValueT>> munnoz_perera_matrix(int N)
     {
         assert(N >= 3);
-        std::vector<std::vector<int>> matrix(N);
+        std::vector<std::vector<DieValueT>> matrix(N);
         for (int n = 1; n <= N; n++)
         {
-            matrix[n - 1] = std::vector<int>(N, 0);
+            matrix[n - 1] = std::vector<DieValueT>(N, 0);
             for (int j = 1; j <= N; j++)
             {
                 matrix[n - 1][j - 1] = (j - 1) * N + (N + n - j) % (N)+1;
@@ -87,7 +87,7 @@ namespace DiceGenerator
     // Returns a set of N intransitive N-sided dice.
     DiceSet munnoz_perera(int N)
     {
-        std::vector<std::vector<int>> matrix = munnoz_perera_matrix(N);
+        std::vector<std::vector<DieValueT>> matrix = munnoz_perera_matrix(N);
         std::vector<Die> dice(N);
         for (int n = 0; n < N; n++)
             dice[n] = Die(matrix[n]);
@@ -120,18 +120,18 @@ namespace DiceGenerator
     {
         assert((N % M) == 0);
         int K = N / M;
-        std::vector<std::vector<int>> munnoz_perera_matrix = DiceGenerator::munnoz_perera_matrix(N);
+        std::vector<std::vector<DieValueT>> munnoz_perera_matrix = DiceGenerator::munnoz_perera_matrix(N);
         std::vector<MultiDie> multi_dice;
         multi_dice.reserve(munnoz_perera_matrix.size());
         for (int row_idx = 0; row_idx < munnoz_perera_matrix.size(); row_idx++)
         {
             size_t row_size = munnoz_perera_matrix[row_idx].size();
             assert(munnoz_perera_matrix[0].size() == row_size && row_size % K == 0);
-            std::vector<std::vector<int>> dice_values;
+            std::vector<std::vector<DieValueT>> dice_values;
             dice_values.reserve(K);
             for (int start_offset = 0, end_offset = M; end_offset <= row_size; start_offset += M, end_offset += M)
             {
-                std::vector<int> die_values(munnoz_perera_matrix[row_idx].begin() + start_offset, munnoz_perera_matrix[row_idx].begin() + end_offset);
+                std::vector<DieValueT> die_values(munnoz_perera_matrix[row_idx].begin() + start_offset, munnoz_perera_matrix[row_idx].begin() + end_offset);
                 dice_values.push_back(die_values);
             }
             multi_dice.push_back(MultiDie(dice_values));
@@ -146,7 +146,7 @@ namespace DiceGenerator
     // Die D_n is one of the 14 14-sided Munnoz-Perera dice. D_n is splitted into  dice { D_n1, D_n2, D_n3 }, and D_n1 has 3 sides, D_n2 has 6 sides, D_n3 has 5 sides.
     MultiDiceSet create_multi_dice_set_munnoz_perera_random_split(int N, std::mt19937& random_generator)
     {
-        std::vector<std::vector<int>> munnoz_perera_matrix = DiceGenerator::munnoz_perera_matrix(N);
+        std::vector<std::vector<DieValueT>> munnoz_perera_matrix = DiceGenerator::munnoz_perera_matrix(N);
         std::vector<MultiDie> multi_dice;
         multi_dice.reserve(munnoz_perera_matrix.size());
         const int min_num_sides = 3; // each die must have at least 3 sides
@@ -154,7 +154,7 @@ namespace DiceGenerator
         {
             int row_size = (int)munnoz_perera_matrix[row_idx].size();
             assert(munnoz_perera_matrix[0].size() == row_size);
-            std::vector<std::vector<int>> dice_values;
+            std::vector<std::vector<DieValueT>> dice_values;
             dice_values.reserve(row_size);
             for (int start_offset = 0; start_offset < row_size; )
             {
@@ -162,7 +162,7 @@ namespace DiceGenerator
                 int end_offset = distribution(random_generator);
                 if (end_offset + min_num_sides > row_size)
                     end_offset = row_size;
-                std::vector<int> die_values(munnoz_perera_matrix[row_idx].begin() + start_offset, munnoz_perera_matrix[row_idx].begin() + end_offset);
+                std::vector<DieValueT> die_values(munnoz_perera_matrix[row_idx].begin() + start_offset, munnoz_perera_matrix[row_idx].begin() + end_offset);
                 dice_values.push_back(die_values);
                 start_offset = end_offset;
             }
@@ -177,27 +177,27 @@ namespace DiceGenerator
     std::vector<DoubleDiceSet> create_random_double_dice_sets_from_12x12(int num_sets)
     {
         std::mt19937 random_generator(0);
-        std::vector<std::vector<int>> munnoz_perera_mat_12 = DiceGenerator::munnoz_perera_matrix(12);
-        std::vector<std::array<std::array<int, 12>, 12>> double_dice_values_list;
+        std::vector<std::vector<DieValueT>> munnoz_perera_mat_12 = DiceGenerator::munnoz_perera_matrix(12);
+        std::vector<std::array<std::array<DieValueT, 12>, 12>> double_dice_values_list;
         double_dice_values_list.reserve(num_sets);
         while (double_dice_values_list.size() < num_sets)
         {
             // std::cout << std::endl << "munnoz_perera_mat_12 = " << std::endl << DiceUtil::print(munnoz_perera_mat_12);
-            std::array<std::array<int, 12>, 12> double_dice_values;
+            std::array<std::array<DieValueT, 12>, 12> double_dice_values;
             for (int row_idx = 0; row_idx < 12; row_idx++)
             {
                 assert(munnoz_perera_mat_12[row_idx].size() == 12);
-                std::array<int, 12> twelve_die_values;
+                std::array<DieValueT, 12> twelve_die_values;
                 bool double_die_already_used = false;
                 do
                 {
                     std::copy(munnoz_perera_mat_12[row_idx].begin(), munnoz_perera_mat_12[row_idx].end(), twelve_die_values.begin());
-                    std::sort(twelve_die_values.begin(), twelve_die_values.begin() + 6, std::less<int>());
-                    std::sort(twelve_die_values.begin() + 6, twelve_die_values.end(), std::less<int>());
+                    std::sort(twelve_die_values.begin(), twelve_die_values.begin() + 6, std::less<DieValueT>());
+                    std::sort(twelve_die_values.begin() + 6, twelve_die_values.end(), std::less<DieValueT>());
                     double_die_already_used = false;
                     for (int n = 0; n < double_dice_values_list.size() && !double_die_already_used; n++)
                     {
-                        std::array<int, 12>& double_die_used = double_dice_values_list[n][row_idx];
+                        std::array<DieValueT, 12>& double_die_used = double_dice_values_list[n][row_idx];
                         if (std::equal(double_die_used.begin(), double_die_used.end(), twelve_die_values.begin()))
                             double_die_already_used = true;
                     }
@@ -216,13 +216,176 @@ namespace DiceGenerator
             double_dice.reserve(double_dice_values_list[n].size());
             for (int m = 0; m < double_dice_values_list[n].size(); m++)
             {
-                std::vector<int> values_die_A(double_dice_values_list[n][m].begin(), double_dice_values_list[n][m].begin() + 6);
-                std::vector<int> values_die_B(double_dice_values_list[n][m].begin() + 6, double_dice_values_list[n][m].end());
+                std::vector<DieValueT> values_die_A(double_dice_values_list[n][m].begin(), double_dice_values_list[n][m].begin() + 6);
+                std::vector<DieValueT> values_die_B(double_dice_values_list[n][m].begin() + 6, double_dice_values_list[n][m].end());
                 double_dice.push_back(DoubleDie({ values_die_A, values_die_B }));
             }
             double_dice_sets.push_back(DoubleDiceSet("Random dice " + std::to_string(n + 1) + " from intransitive 12x12 Munnoz-Perera matrix", double_dice));
         }
         return double_dice_sets;
+    }
+
+    // Tries to find a die die_j "between" two dice die_i and die_k with P(die_i>die_j) > 0.5 && P(die_j>die_k) > 0.5.
+    // Let die_i and die_k be two N-sided dice with P(die_i>die_k) > 0.5, where die_i[n] is the n-th value of die_i and
+    // die_k[n] is the n-th value of die_k, with 0 <= n < N for N-sided dice. This function uses a simple algorithm:
+    // If die_i[n] > die_k[n], die_j[n] can be smaller than die_i[n] to ensure that die_i beats die_j. We choose die_j[n] = (die_i[n] + die_k[n]) / 2.
+    // If die_i[n] < die_k[n], die_j[n] can be greater than die_k[n] to ensure that die_j beats die_k. We choose die_j[n] = die_k[n] + 1.
+    Die find_die_between_two_others(Die& die_i, Die& die_k)
+    {
+        const std::vector<DieValueT>& die_i_vec = die_i.values();
+        const std::vector<DieValueT>& die_k_vec = die_k.values();
+        assert(die_i_vec.size() == die_k_vec.size());
+        double pDiDk = die_i.probability_to_beat(die_k);
+        if (pDiDk > 0.5) // P(die_i>die_k) > 0.5: find die_j with P(die_i>die_j) > 0.5 and P(die_j>die_k) > 0.5
+        {
+            std::vector<DieValueT> die_j_vec(die_i_vec.size());
+            for (int n = 0; n < die_i_vec.size(); n++)
+            {
+                if (die_i_vec[n] > die_k_vec[n])
+                    die_j_vec[n] = (die_i_vec[n] + die_k_vec[n]) / 2;
+                else if (die_i_vec[n] < die_k_vec[n])
+                    die_j_vec[n] = die_k_vec[n] + 1;
+                else
+                    die_j_vec[n] = die_i_vec[n];
+            }
+            Die die_j(die_j_vec);
+            double pDiDj = die_i.probability_to_beat(die_j);
+            double pDjDk = die_j.probability_to_beat(die_k);
+            if (pDiDj > 0.5 && pDjDk > 0.5)
+                return die_j; // success: P(die_i>die_k) > 0.5, P(die_i>die_j) > 0.5, P(die_j>die_k) > 0.5
+        }
+        else if (pDiDk < 0.5) // P(die_i>die_k) < 0.5: find die_j with P(die_i>die_j) < 0.5 and P(die_j>die_k) < 0.5
+        {
+            std::vector<DieValueT> die_j_vec(die_k_vec.size());
+            for (int n = 0; n < die_k_vec.size(); n++)
+            {
+                if (die_k_vec[n] > die_i_vec[n])
+                    die_j_vec[n] = (die_i_vec[n] + die_k_vec[n]) / 2;
+                else if (die_k_vec[n] < die_i_vec[n])
+                    die_j_vec[n] = die_i_vec[n] + 1;
+                else
+                    die_j_vec[n] = die_k_vec[n];
+            }
+            Die die_j(die_j_vec);
+            double pDiDj = die_i.probability_to_beat(die_j);
+            double pDjDk = die_j.probability_to_beat(die_k);
+            if (pDiDj < 0.5 && pDjDk < 0.5)
+                return die_j; // success: P(die_i>die_k) < 0.5, P(die_i>die_j) < 0.5, P(die_j>die_k) < 0.5
+        }
+        else // fallback: die_j[n] = (die_i[n] + die_k[n]) / 2, if P(die_i>die_k) == 0.5
+        {
+            std::vector<DieValueT> die_j_vec(die_k_vec.size());
+            for (int n = 0; n < die_k_vec.size(); n++)
+                die_j_vec[n] = (die_i_vec[n] + die_k_vec[n]) / 2;
+            Die die_j(die_j_vec);
+            double pDiDj = die_i.probability_to_beat(die_j);
+            double pDjDk = die_j.probability_to_beat(die_k);
+            if (std::abs(pDiDj - 0.5) < FLT_EPSILON && std::abs(pDjDk - 0.5) < FLT_EPSILON)
+                return die_j; // success: P(die_i>die_k) == 0.5, P(die_i>die_j) == 0.5, P(die_j>die_k) == 0.5
+        }
+        return Die(); // no die found
+    }
+
+
+    // Iteratively insert new dice D_j between D_i and D_(i+1), such that P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5.
+    // Start with a given set of dice and a given intransitive path, and repeat the process until
+    // the given max. number of dice are reached, or no new dice D_j can be found.
+    // If initial_dice_path is intransitive, extended_dice_path will also be intransitive
+    bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, bool print_intermediate_steps)
+    {
+        std::string extended_dice_name = extended_dice_set.name().empty() ? initial_dice_set.name() : extended_dice_set.name();
+        extended_dice_set = DiceSet(extended_dice_name, initial_dice_set.dice());
+        extended_dice_path = initial_dice_path;
+        DieValueT min_die_value = extended_dice_set.min_die_value();
+        if (min_die_value < 1) // norm min. die value to >= 1
+            extended_dice_set.mul_add_values(1, min_die_value + 1);
+        while (extended_dice_set.size() < max_num_dice)
+        {
+            DiceSet work_dice_set;
+            DicePath work_dice_path;
+            if (extend_set_by_intransitive_dice_insertion_once(extended_dice_set, extended_dice_path, max_num_dice, work_dice_set, work_dice_path))
+            {
+                // New dice found => iterate with extended dice set
+                extended_dice_set = work_dice_set;
+                extended_dice_path = work_dice_path;
+                if (print_intermediate_steps)
+                    std::cout << extended_dice_set.print_path_probabilities_x(extended_dice_path, true) << std::endl;
+            }
+            else
+            {
+                // No new dice found => multiply all values of all dice by factor 2 and retry
+                bool success = false;
+                DiceSet input_dice_set = extended_dice_set;
+                DicePath input_dice_path = extended_dice_path;
+                for (int retry_cnt = 0; !success && extended_dice_set.size() < max_num_dice && retry_cnt < 2; retry_cnt++)
+                {
+                    input_dice_set.mul_add_values(2, -1);
+                    if (extend_set_by_intransitive_dice_insertion_once(input_dice_set, input_dice_path, max_num_dice, work_dice_set, work_dice_path))
+                    {
+                        // New dice found => iterate with extended dice set
+                        extended_dice_set = work_dice_set;
+                        extended_dice_path = work_dice_path;
+                        success = true;
+                        if (print_intermediate_steps)
+                            std::cout << extended_dice_set.print_path_probabilities_x(extended_dice_path, true) << std::endl;
+                    }
+                }
+                if (!success)
+                    break;
+            }
+        }
+        return extended_dice_set.size() > initial_dice_set.size() && extended_dice_path.size() > initial_dice_path.size();
+    }
+
+    // Insert new dice D_j between D_i and D_(i+1), such that P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5, 
+    // once with all dice in the dice set, until the given max. number of dice are reached, or no new dice D_j can be found.
+    // If initial_dice_path is intransitive, extended_dice_path will also be intransitive
+    bool extend_set_by_intransitive_dice_insertion_once(DiceSet& initial_dice_set, DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path)
+    {
+        assert(initial_dice_set.size() > 1 && initial_dice_path.size() > 1);
+        if (initial_dice_set.size() >= max_num_dice)
+        {
+            extended_dice_set = initial_dice_set;
+            extended_dice_path = initial_dice_path;
+            return false;
+        }
+        std::vector<Die> extended_dice_vec;
+        extended_dice_vec.reserve(2 * initial_dice_path.size());
+        for (size_t dice_cnt = 1; dice_cnt < initial_dice_path.size(); dice_cnt++)
+        {
+            int dice_from = initial_dice_path.at(dice_cnt - 1);
+            int dice_to = initial_dice_path.at(dice_cnt);
+            Die die_i = initial_dice_set.at(dice_from);
+            Die die_k = initial_dice_set.at(dice_to);
+            Die die_j = DiceGenerator::find_die_between_two_others(die_i, die_k);
+            extended_dice_vec.push_back(die_i);
+            if (die_j.num_values() == die_i.num_values()) // success: P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5 => Insert new die_j
+                extended_dice_vec.push_back(die_j);
+            if (extended_dice_vec.size() + ((int)initial_dice_path.size() - (int)dice_cnt) >= max_num_dice) // max number of dice reached => just copy the remaining dice and finish
+            {
+                for (size_t n = dice_cnt + 1; n < initial_dice_path.size(); n++)
+                    extended_dice_vec.push_back(initial_dice_set.at(initial_dice_path.at(n - 1)));
+                break;
+            }
+        }
+        if (extended_dice_vec.size() > initial_dice_set.size()) // success: new dice found
+        {
+            extended_dice_set = DiceSet(initial_dice_set.name(), extended_dice_vec);
+            std::vector<int> extended_dice_idx;
+            extended_dice_idx.reserve(extended_dice_set.size());
+            for (size_t dice_cnt = 0; dice_cnt < extended_dice_set.size(); dice_cnt++)
+                extended_dice_idx.push_back(dice_cnt);
+            if (initial_dice_path.front() == initial_dice_path.back())
+                extended_dice_idx.push_back(extended_dice_idx.front());
+            extended_dice_path = DicePath(extended_dice_idx);
+            return true;
+        }
+        else // no success, no dice found
+        {
+            extended_dice_set = initial_dice_set;
+            extended_dice_path = initial_dice_path;
+            return false;
+        }
     }
 
 } // namespace DiceGenerator

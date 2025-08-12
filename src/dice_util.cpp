@@ -21,7 +21,7 @@ namespace DiceUtil
   }
 
   // Generates all combinations of dice sums recursively
-  void generate_sums_recursively(const std::vector<std::vector<int>>& dice, size_t die_index, int current_sum, std::vector<int>& results)
+  template <typename T> void generate_sums_recursively(const std::vector<std::vector<T>>& dice, size_t die_index, T current_sum, std::vector<T>& results)
   {
     if (die_index == dice.size()) 
     {
@@ -35,7 +35,7 @@ namespace DiceUtil
   }
 
   // Formats a vector of integers into a string
-  std::string print(const std::vector<int>& vec)
+  template <typename T> std::string print(const std::vector<T>& vec)
   {
     std::stringstream str;
     for (size_t i = 0; i < vec.size(); i++)
@@ -44,7 +44,7 @@ namespace DiceUtil
   }
 
   // Formats a vector of integers into a string
-  std::string print(const std::vector<int>& vec, int width)
+  template <typename T> std::string print(const std::vector<T>& vec, int width)
   {
     std::stringstream str;
     for (size_t i = 0; i < vec.size(); i++)
@@ -53,7 +53,7 @@ namespace DiceUtil
   }
 
   // Formats a matrix (i.e. a vector of vectors of integers) into a string
-  std::string print(const std::vector<std::vector<int>>& matrix)
+  template <typename T> std::string print(const std::vector<std::vector<T>>& matrix)
   {
     std::stringstream str;
     for (size_t i = 0; i < matrix.size(); i++)
@@ -65,5 +65,15 @@ namespace DiceUtil
     }
     return str.str();
   }
+
+  // Explicit template instantiation
+  template void generate_sums_recursively<int>(const std::vector<std::vector<int>>& dice, size_t die_index, int current_sum, std::vector<int>& results);
+  template void generate_sums_recursively<int64_t>(const std::vector<std::vector<int64_t>>& dice, size_t die_index, int64_t current_sum, std::vector<int64_t>& results);
+  template std::string print<int>(const std::vector<int>& vec);
+  template std::string print<int64_t>(const std::vector<int64_t>& vec);
+  template std::string print<int>(const std::vector<int>& vec, int width);
+  template std::string print<int64_t>(const std::vector<int64_t>& vec, int width);
+  template std::string print<int>(const std::vector<std::vector<int>>& matrix);
+  template std::string print<int64_t>(const std::vector<std::vector<int64_t>>& matrix);
 
 } // namespace DiceUtil
