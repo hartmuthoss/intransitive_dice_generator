@@ -104,7 +104,7 @@ public:
   bool has_intransitive_paths();
 
   // Prints the matrix of beat probabilities P(D_i>D_j) for all i, j.
-  void print_probability_matrix();
+  std::string print_probability_matrix();
 
   // Prints the beat probabilities P(D_i>D_j) for all i, j in a given path.
   std::string print_path_probabilities(const DicePath& path, bool& path_is_intransitive, bool warn_if_path_is_not_intransitive);

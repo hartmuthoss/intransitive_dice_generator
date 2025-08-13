@@ -191,14 +191,16 @@ template <typename DieType> bool DiceSetT<DieType>::has_intransitive_paths()
 }
 
 // Prints the matrix of beat probabilities P(D_i>D_j) for all i, j.
-template <typename DieType> void DiceSetT<DieType>::print_probability_matrix()
+template <typename DieType> std::string DiceSetT<DieType>::print_probability_matrix()
 {
+    std::stringstream str;
     for (size_t i = 0; i < m_dice.size(); i++)
     {
         for (size_t j = 0; j < m_dice.size(); j++)
-            std::cout << " " << std::fixed << std::setprecision(3) << m_dice[i].probability_to_beat(m_dice[j]);
-        std::cout << std::endl;
+            str << " " << std::fixed << std::setprecision(3) << m_dice[i].probability_to_beat(m_dice[j]);
+        str << std::endl;
     }
+    return str.str();
 }
 
 // Prints the beat probabilities P(D_i>D_j) for all i, j in a given path.
@@ -225,9 +227,12 @@ template <typename DieType> std::string DiceSetT<DieType>::print_path_probabilit
         assert(path_is_intransitive); // debug version (assertion)
         if (!path_is_intransitive)   // release version
         {
-            std::cerr << std::endl << "## WARNING Path " << path.print() << " in " << name() << " is NOT intransitive, expected an intransitive path!" << std::endl;
-            std::cerr << "## WARNING " << name() << ": " << str.str() << std::endl;
-            std::cerr << "## Press ENTER to continue..." << std::endl;
+            std::stringstream err_str;
+            err_str << std::endl << "## WARNING Path " << path.print() << " in " << name() << " is NOT intransitive, expected an intransitive path!" << std::endl;
+            err_str << "## WARNING " << name() << ": " << str.str() << std::endl;
+            err_str << "## Press ENTER to continue..." << std::endl;
+            str << err_str.str();
+            std::cerr << err_str.str();
             getchar();
         }
     }

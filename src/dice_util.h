@@ -14,6 +14,9 @@ namespace DiceUtil
     // Returns true, if a given string is a palindrome
     bool is_palindrome(const std::string& str);
 
+    // Checks given commandline arguments for arg_name. If found, arg_value is set and true returned; otherwise just false is returned. 
+    bool has_cli_arg(int argc, char** argv, const std::string& arg_name, int& arg_value);
+
     // Generates all combinations of dice sums recursively
     template <typename T> void generate_sums_recursively(const std::vector<std::vector<T>>& dice, size_t die_index, T current_sum, std::vector<T>& results);
 

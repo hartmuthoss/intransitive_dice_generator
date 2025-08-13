@@ -1,6 +1,7 @@
 // Generator for intransitive dice and pairs of dice
 #pragma once
 #include "dice.h"
+#include "dice_logger.h"
 
 // DiceGenerator implements some generators for intransitive dice and tuples of dice
 namespace DiceGenerator
@@ -83,7 +84,7 @@ namespace DiceGenerator
 	// Start with a given set of dice and a given intransitive path, and repeat the process until
 	// the given max. number of dice are reached, or no new dice D_j can be found.
 	// If initial_dice_path is intransitive, extended_dice_path will also be intransitive
-	bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, bool print_intermediate_steps = false);
+	bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, DiceLogger* logger = 0);
 
 	// Insert new dice D_j between D_i and D_(i+1), such that P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5, 
 	// once with all dice in the dice set, until the given max. number of dice are reached, or no new dice D_j can be found.

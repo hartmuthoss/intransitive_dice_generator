@@ -1,8 +1,6 @@
 # Intransitive dice generation
 
-This project generates [intransitiv dice](https://en.wikipedia.org/wiki/Intransitive_dice). 
-
-Unlike intransitive dice with more than six sides, this project generates
+This project generates [intransitiv dice](https://en.wikipedia.org/wiki/Intransitive_dice):
 * pairs of six-sided dice and their sum (six-sided sum dice),
 * tuples of $K$ $M$-sided sum dice,
 * and $N$ intransitive $M$-sided dice for almost any number of $N$ and $M$.
@@ -133,6 +131,11 @@ cmake -G "Unix Makefiles" ..
 make -j4
 ./intransitive_dice_generator
 ```
+
+By default (i.e. no command line options given), intransitive_dice_generator creates and prints some examples of intransitive dice with different cycle lengths.  
+To create a chain of N intransitive M-sided dice with N ≥ M, call intransitive_dice_generator with arguments `-N=<int> -M=<int>`.  
+Example: `intransitive_dice_generator -N=12 -M=6` creates 12 intransitive 6-sided dice.  
+Note: intransitive_dice_generator logs all messages in logfile intransitive_dice_generator.log.
 
 ## Appendix
 

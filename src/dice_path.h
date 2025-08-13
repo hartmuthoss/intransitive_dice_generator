@@ -183,10 +183,7 @@ public:
       for (path_iter2++; path_iter2 != m_paths.end(); )
       {
         if (path_iter2->is_identical(*path_iter1))
-        {
-          std::cout << "remove_duplicate_paths(): path " << path_iter2->print() << " found twice, removing duplicate" << std::endl;
           path_iter2 = m_paths.erase(path_iter2);
-        }
         else
           path_iter2++;
       }

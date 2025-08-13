@@ -291,11 +291,13 @@ namespace DiceGenerator
     // Start with a given set of dice and a given intransitive path, and repeat the process until
     // the given max. number of dice are reached, or no new dice D_j can be found.
     // If initial_dice_path is intransitive, extended_dice_path will also be intransitive
-    bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, bool print_intermediate_steps)
+    bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, DiceLogger* logger)
     {
         std::string extended_dice_name = extended_dice_set.name().empty() ? initial_dice_set.name() : extended_dice_set.name();
         extended_dice_set = DiceSet(extended_dice_name, initial_dice_set.dice());
         extended_dice_path = initial_dice_path;
+        if (initial_dice_set.size() >= max_num_dice)
+            return true;
         DieValueT min_die_value = extended_dice_set.min_die_value();
         if (min_die_value < 1) // norm min. die value to >= 1
             extended_dice_set.mul_add_values(1, min_die_value + 1);
@@ -308,8 +310,8 @@ namespace DiceGenerator
                 // New dice found => iterate with extended dice set
                 extended_dice_set = work_dice_set;
                 extended_dice_path = work_dice_path;
-                if (print_intermediate_steps)
-                    std::cout << extended_dice_set.print_path_probabilities_x(extended_dice_path, true) << std::endl;
+                if (logger)
+                    logger->cout() << extended_dice_set.print_path_probabilities_x(extended_dice_path, true) << std::endl;
             }
             else
             {
@@ -326,8 +328,8 @@ namespace DiceGenerator
                         extended_dice_set = work_dice_set;
                         extended_dice_path = work_dice_path;
                         success = true;
-                        if (print_intermediate_steps)
-                            std::cout << extended_dice_set.print_path_probabilities_x(extended_dice_path, true) << std::endl;
+                        if (logger)
+                            logger->cout() << extended_dice_set.print_path_probabilities_x(extended_dice_path, true) << std::endl;
                     }
                 }
                 if (!success)
