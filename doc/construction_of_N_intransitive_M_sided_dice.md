@@ -4,10 +4,10 @@
 
 For any fixed values of $N$ and $M$ with $N,M≥3$, there exist sets of $N$ $M$-sided dice $D_i$ with $1≤i≤N$ forming a strict intransitive cycle, such that $P(D_1>D_2) > 0.5, ..., P(D_{N-1}>D_N) > 0.5, P(D_N>D_1) > 0.5$, or $P(D_N>D_{N-1}) > 0.5, ..., P(D_2>D_1) > 0.5, P(D_1>D_N) > 0.5$.
 
-For $N=M$ and $M≥3$, we can generate a set of $N$ $M$-sided dice e.g. using Muñoz-Perera's formula. [^1]
+For $N=M$ and $M≥3$, we can generate a set of $N$ $M$-sided dice e.g. using Muñoz-Perera's formula [^1] or Clary-Leininger dice [^4].
 
 For $N>M$ and $M≥3$, we can generate these intransitive dice using the following algorithm (3-level insertion):
-1. Start with a known set of $M$ intransitive $M$-sided dice with $P(D_M>D_{M-1}) > 0.5, ..., P(D_2>D_1) > 0.5, P(D_1>D_M) > 0.5$. The initial set is given e.g. by Muñoz-Perera's formula for $M≥3$. [^1] Any intransitive $M$-cycle seed suffices; Muñoz-Perera dice are convenient but not required.
+1. Start with a known set of $M$ intransitive $M$-sided dice with $P(D_M>D_{M-1}) > 0.5, ..., P(D_2>D_1) > 0.5, P(D_1>D_M) > 0.5$. The initial set is given e.g. by Muñoz-Perera's formula for $M≥3$ [^1] Any intransitive $M$-cycle seed suffices; Muñoz-Perera dice [^1] or Clary-Leininger dice [^4] are convenient but not required.
 2. Construct a new die $D_j$ with $P(D_i>D_j) > 0.5$ and $P(D_j>D_{i-1}) > 0.5$.
 3. Insert the new die $D_j$ in the cycle between $D_i$ and $D_{i-1}$.
 4. Repeat steps 2 and 3 until there are $N$ intransitive dice.
@@ -96,19 +96,19 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
    * $T > B[j_T]$ with $j_T > M/2$ and $cnt(A>B[j_T]) > M/2$, and
    * $T < min(A, B: A > B[j_T], B > B[j_T])$.
 
-   Then integer values $m_L = 1, m_H = 1, m_T ​= M − 2$ satisfy (9.2) and (9.3): [4]
+   Then integer values $m_L = 1, m_H = 1, m_T ​= M − 2$ satisfy (9.2) and (9.3): [8]
 
    *  $P(A>C) ≥ \frac{m_L}{M} + P(A>T) \cdot \frac{m_T}{M}$  
       $\equiv P(A>C) ≥ \frac{1}{M} + P(A>T) \cdot \frac{M − 2}{M}$  
       $\equiv P(A>C) > 0.5$  
       because  
-      $\frac{1}{M} + P(A>T) \cdot \frac{M − 2}{M} > 0.5$ for $P(A>T) > 0.5$ [5]
+      $\frac{1}{M} + P(A>T) \cdot \frac{M − 2}{M} > 0.5$ for $P(A>T) > 0.5$ [9]
 
    *  $P(C>B) ≥ \frac{m_H}{M} + P(B<T) \cdot \frac{m_T}{M}$  
       $\equiv P(C>B) ≥ \frac{1}{M} + P(B<T) \cdot \frac{M − 2}{M}$  
       $\equiv P(C>B) > 0.5$  
       because  
-      $\frac{1}{M} + P(B<T) \cdot \frac{M − 2}{M} > 0.5$ for $P(B<T) > 0.5$ [5]
+      $\frac{1}{M} + P(B<T) \cdot \frac{M − 2}{M} > 0.5$ for $P(B<T) > 0.5$ [9]
 
    The following screenshot shows the same example with dice $A = [2, 19, 22, 23, 29, 30]$, $B = [9, 16, 16, 19, 31, 38]$ and the new die $C = [1, 17.5, 17.5, 17.5, 39, 39]$ with $P(A>B) = 0.528$, $P(A>C) = 0.583$, $P(C>B) = 0.583$:
 
@@ -123,9 +123,11 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
 
 [^3]: Luis G. Coelho, Tertuliano Franco, Lael V. Lima, João P.C. de Paula, João V.A. Pimenta, Guilherme L.F. Silva and Daniel Ungaretti: "Central limit theorem for intransitive dice", https://arxiv.org/pdf/2310.17083
 
+[^4]: Erika Clary, Dr. Verne Leininger: "Proving Pairwise Intransitivity in Sets of Dice": https://digitalcommons.bridgewater.edu/cgi/viewcontent.cgi?article=1025&context=honors_projects
+
 [^7]: A. Schaefer and J. Schweig. Balanced Non-Transitive Dice. College Math. J., 48 (2017), no. 1, 10–16, cited in [^3]
 
-[4]: Note that $m_L = 1, m_H = 1, m_T ​= M − 2$ are not the only possible solutions. (9.2) and (9.3) can also be satisfied for $P(A>T) < 0.5, P(B<T) > 0.5$ and $P(A>T) > 0.5, P(B<T) < 0.5$:
+[8]: Note that $m_L = 1, m_H = 1, m_T ​= M − 2$ are not the only possible solutions. (9.2) and (9.3) can also be satisfied for $P(A>T) < 0.5, P(B<T) > 0.5$ and $P(A>T) > 0.5, P(B<T) < 0.5$:
    * $P(A>T) + P(B<T) > 1$ follows from $P(A≤T) < P(B≤T)$
    * We choose
       * $m_L ≥ max(0, ⌊M/2 - m_T*P(A>T)⌋ + 1)$,
@@ -138,6 +140,6 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
       * $P(A>C) ≥ (m_L/M + P(A>T) \cdot m_T/M) > 0.5$ and
       * $P(C>B) ≥ (m_H/M + P(B<T) \cdot m_T/M) > 0.5$
 
-[5]: $\frac{1}{M} + \frac{1}{2} \cdot \frac{M − 2}{M} = \frac{2 + M − 2}{2 M} = \frac{1}{2}$
+9]: $\frac{1}{M} + \frac{1}{2} \cdot \frac{M − 2}{M} = \frac{2 + M − 2}{2 M} = \frac{1}{2}$
 
 Keywords: intransitive dice, nontransitive dice, intransitive cycle, Muñoz-Perera.

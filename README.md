@@ -46,7 +46,7 @@ The second algorithm uses a 3-level insertion:
 * To convert reell face values to integer, we multiply all dice values by a constant factor greater than one and cast the result. If the factor is large enough, the resulting integer dice will still hold $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$.
 * To my knowledge, the 3-level insertion is bullet-proof and works on all dice with $P(D_i>D_k) > 0.5$.
 
-We repeat this process iteratively until the cycle length reaches the desired limit. This enables us to enlarge a given intransitive cycle by adding new dice ad infinitum. As far as I could test, we can easily generate millions of intransitive dice in this way, starting with six-sided Oskar dice, Grime dice or $M$-sided Muñoz-Perera dice (or probably with any other intransitive dice).
+We repeat this process iteratively until the cycle length reaches the desired limit. This enables us to enlarge a given intransitive cycle by adding new dice ad infinitum. As far as I could test, we can easily generate millions of intransitive dice in this way, starting with six-sided Oskar dice, Grime dice, $M$-sided Muñoz-Perera dice or $M$-sided Clary-Leininger dice (or probably with any other intransitive dice).
 
 **Conjecture: For any fixed values of $N$ and $M$ greater than $2$, there exist sets of $N$ $M$-sided dice forming a strict intransitive cycle.**
 
