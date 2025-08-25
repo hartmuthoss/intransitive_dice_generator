@@ -40,19 +40,20 @@ It also matches the [central limit theorem for intransitive dice](https://arxiv.
 2. Let $A$ be a M-sided die with face values $A[m]$, $1 ≤ m ≤ M$. We use $cnt(A > t)$ and $cnt(A < t)$ as shortcuts for the number of values above resp. below a threshold $t$, i.e. $cnt$ gives the number of values with property $A[m] > t$ resp.  $A[m] < t$:
    * $cnt(A > t) = \sum_{m=1}^M{H(A[m] > t)}$
    * $cnt(A ≤ t) = \sum_{m=1}^M{H(A[m] ≤ t)}$
-   * where the [Heaviside step function](https://en.wikipedia.org/wiki/Heaviside_step_function) (indicator function) is defined by $H(x) = 1$ if $x$ is true and $H(x) = 0$ otherwise.
+
+   where the [Heaviside step function](https://en.wikipedia.org/wiki/Heaviside_step_function) (indicator function) is defined by $H(x) = 1$ if $x$ is true and $H(x) = 0$ otherwise.
 
 3. The probability that die $A$ rolls a value above or below a given threshold $t$ is given by the distribution functions:
-   * $F_A(t) = P(A ≤ t) = := cnt(A ≤ t) / M$ (cumulative distribution function)
+   * $F_A(t) = P(A ≤ t) := cnt(A ≤ t) / M$ (cumulative distribution function)
    * $S_A(t) = P(A > t) = 1 - F_A(t) := cnt(A > t) / M$ (survival function)
 
 4. The probability that die $A$ beats die $B$ on average is $P(A>B)$:
-   * $P(A>B) = (1/M^2) * \sum_{m=1}^M{\sum_{k=1}^M{H(A[m]>B[k])}}$
+   * $P(A>B) = (1/M^2) \cdot \sum_{m=1}^M{\sum_{k=1}^M{H(A[m]>B[k])}}$
    * $P(A>B) > 0.5$ <=> $(\sum_{m=1}^M{\sum_{k=1}^M{H(A[m]>B[k])}}) > M^2/2$  
    * $P(A>B) > 0.5$ <=> $(\sum_{k=1}^M{cnt(A > B[k])}) > M^2/2$  
 
 5. The value range of a set of dice can be mapped to real numbers between 0 and 1 by subtracting the minimum value and dividing the remaining maximum value (normalisation of the value range to real numbers in the interval $[0, 1]$):  
-$x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the intransitivity of the dice or their probabilities $P(A>B)$, since $P(A > B) = P(a*A+b > a*B+b)$ for any $a > 0$.
+$x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the intransitivity of the dice or their probabilities $P(A>B)$, since $P(A > B) = P(a \cdot A + b > a  \cdot B + b)$ for any $a > 0$.
 
 6. This way we can map the integer value range of the dice to real numbers between 0 and 1 without changing their probabilities and vice versa. $P(A>B)$ is invariant to value normalization. To convert real face values to integer, we multiply all dice values by a constant factor greater than one and round down the result: $x ↦ ⌊ax⌋$. If the factor is large enough, the resulting integer die $C$ will still hold $P(A>C) > 0.5$ and $P(C>B) > 0.5$:
 
@@ -75,41 +76,41 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
 
 9. To satisfy $P(A>C) > 0.5$ and $P(C>B) > 0.5$ assuming $P(A>B) > 0.5$, values $T$, $m_L$, $m_T$ and $m_H$ are chosen such that:  
 
-   1. $$m_L + m_T + m_H = M$$
+   1. $m_L + m_T + m_H = M$  
 
-   2. $$P(A>C) ≥ P(A>L) \cdot \frac{m_L}{M} + P(A>T) \cdot \frac{m_T}{M} + P(A>H) \cdot \frac{m_H}{M} > 0.5$$
-      $$\equiv P(A>C) ≥ 1 \cdot \frac{m_L}{M} + P(A>T) \cdot \frac{m_T}{M} + 0 \cdot \frac{m_H}{M} > 0.5$$
-      $$\equiv m_L + m_T \cdot P(A>T) > M/2$$
+   2. $P(A>C) ≥ P(A>L) \cdot \frac{m_L}{M} + P(A>T) \cdot \frac{m_T}{M} + P(A>H) \cdot \frac{m_H}{M} > 0.5$  
+      $\equiv P(A>C) ≥ 1 \cdot \frac{m_L}{M} + P(A>T) \cdot \frac{m_T}{M} + 0 \cdot \frac{m_H}{M} > 0.5$  
+      $\equiv m_L + m_T \cdot P(A>T) > M/2$  
 
-   3. $$P(C>B) ≥ P(B<L) \cdot \frac{m_L}{M} + P(B<T) \cdot \frac{m_T}{M} + P(B<H) \cdot \frac{m_H}{M} > 0.5$$
-      $$\equiv P(C>B) ≥ 0 \cdot \frac{m_L}{M} + P(B<T) \cdot \frac{m_T}{M} + 1 \cdot \frac{m_H}{M} > 0.5$$
-      $$\equiv m_T \cdot P(B<T) + m_H > M/2$$
+   3. $P(C>B) ≥ P(B<L) \cdot \frac{m_L}{M} + P(B<T) \cdot \frac{m_T}{M} + P(B<H) \cdot \frac{m_H}{M} > 0.5$  
+      $\equiv P(C>B) ≥ 0 \cdot \frac{m_L}{M} + P(B<T) \cdot \frac{m_T}{M} + 1 \cdot \frac{m_H}{M} > 0.5$  
+      $\equiv m_T \cdot P(B<T) + m_H > M/2$  
 
-   4. $$t_1 + ε < T < t_2$$
+   4. $t_1 + ε < T < t_2$  
 
    with integer values $m_L$, $m_T$, $m_H$ and real values $t_1$, $t_2$ such that $P(A≤t) < P(B≤t)$ for all $t_1 < t < t_2$. 
    
-   Since the region of $P(A≤t) < P(B≤t)$ is not empty due to $P(A>B) > 0.5$, the threshold $T$ always exists. The existence of threshold $T$ is necessary but not sufficient; equations (9.2) and (9.3) have be satisfied, too. 
+   Since the region of $P(A≤t) < P(B≤t)$ is not empty due to $P(A>B) > 0.5$, the threshold $T$ always exists. The existence of threshold $T$ is necessary but not sufficient; equations (9.2) and (9.3) have to be satisfied, too. 
    
-   Therefore we choose $T$ to be the smallest value such that $P(A>T) > 0.5$ and $P(B<T) > 0.5$, i.e.
+   Therefore we choose threshold $T$ to be the smallest value such that $P(A>T) > 0.5$ and $P(B<T) > 0.5$, i.e.
    * $T > B[j_T]$ with $j_T > M/2$ and $cnt(A>B[j_T]) > M/2$, and
    * $T < min(A, B: A > B[j_T], B > B[j_T])$.
 
-   Then integer values $m_L = 1, m_H = 1, m_T ​= M − 2$ satisfy (9.2) and (9.3): [^4]
+   Then integer values $m_L = 1, m_H = 1, m_T ​= M − 2$ satisfy (9.2) and (9.3): [4]
 
    *  $P(A>C) ≥ \frac{m_L}{M} + P(A>T) \cdot \frac{m_T}{M}$  
       $\equiv P(A>C) ≥ \frac{1}{M} + P(A>T) \cdot \frac{M − 2}{M}$  
       $\equiv P(A>C) > 0.5$  
       because  
-      $\frac{1}{M} + P(A>T) \cdot \frac{M − 2}{M} > 0.5$ for $P(A>T) > 0.5$ [^5]
+      $\frac{1}{M} + P(A>T) \cdot \frac{M − 2}{M} > 0.5$ for $P(A>T) > 0.5$ [5]
 
    *  $P(C>B) ≥ \frac{m_H}{M} + P(B<T) \cdot \frac{m_T}{M}$  
       $\equiv P(C>B) ≥ \frac{1}{M} + P(B<T) \cdot \frac{M − 2}{M}$  
       $\equiv P(C>B) > 0.5$  
       because  
-      $\frac{1}{M} + P(B<T) \cdot \frac{M − 2}{M} > 0.5$ for $P(B<T) > 0.5$ [^5]
+      $\frac{1}{M} + P(B<T) \cdot \frac{M − 2}{M} > 0.5$ for $P(B<T) > 0.5$ [5]
 
-   The following screenshot shows the same example with dice $A = [2, 19, 22, 23, 29, 30]$, $B = [9, 16, 16, 19, 31, 38]$ and $C = [1, 17.5, 17.5, 17.5, 39, 39]$ with $P(A>B) = 0.528$, $P(A>C) = 0.583$, $P(C>B) = 0.583$:
+   The following screenshot shows the same example with dice $A = [2, 19, 22, 23, 29, 30]$, $B = [9, 16, 16, 19, 31, 38]$ and the new die $C = [1, 17.5, 17.5, 17.5, 39, 39]$ with $P(A>B) = 0.528$, $P(A>C) = 0.583$, $P(C>B) = 0.583$:
 
    ![insert_three_level_2.png](insert_three_level_2.png)  
    Note that the solution is not unique. Several thresholds $t$ can be chosen to satisfy $P(A>C) > 0.5$ and $P(C>B) > 0.5$.
@@ -122,7 +123,9 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
 
 [^3]: Luis G. Coelho, Tertuliano Franco, Lael V. Lima, João P.C. de Paula, João V.A. Pimenta, Guilherme L.F. Silva and Daniel Ungaretti: "Central limit theorem for intransitive dice", https://arxiv.org/pdf/2310.17083
 
-[^4]: Note that $m_L = 1, m_H = 1, m_T ​= M − 2$ are not the only possible solutions. (9.2) and (9.3) can also be satisfied for $P(A>T) < 0.5, P(B<T) > 0.5$ and $P(A>T) > 0.5, P(B<T) < 0.5$:
+[^7]: A. Schaefer and J. Schweig. Balanced Non-Transitive Dice. College Math. J., 48 (2017), no. 1, 10–16, cited in [^3]
+
+[4]: Note that $m_L = 1, m_H = 1, m_T ​= M − 2$ are not the only possible solutions. (9.2) and (9.3) can also be satisfied for $P(A>T) < 0.5, P(B<T) > 0.5$ and $P(A>T) > 0.5, P(B<T) < 0.5$:
    * $P(A>T) + P(B<T) > 1$ follows from $P(A≤T) < P(B≤T)$
    * We choose
       * $m_L ≥ max(0, ⌊M/2 - m_T*P(A>T)⌋ + 1)$,
@@ -135,8 +138,6 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
       * $P(A>C) ≥ (m_L/M + P(A>T) \cdot m_T/M) > 0.5$ and
       * $P(C>B) ≥ (m_H/M + P(B<T) \cdot m_T/M) > 0.5$
 
-[^5]: $\frac{1}{M} + \frac{1}{2} \cdot \frac{M − 2}{M} = \frac{2 + M − 2}{2 M} = \frac{1}{2}$
-
-[^7]: A. Schaefer and J. Schweig. Balanced Non-Transitive Dice. College Math. J., 48 (2017), no. 1, 10–16, cited in [^3]
+[5]: $\frac{1}{M} + \frac{1}{2} \cdot \frac{M − 2}{M} = \frac{2 + M − 2}{2 M} = \frac{1}{2}$
 
 Keywords: intransitive dice, nontransitive dice, intransitive cycle, Muñoz-Perera.

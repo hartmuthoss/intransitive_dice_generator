@@ -190,6 +190,6 @@ Warren Buffett is known to be a fan of non-transitive dice... Buffett once tried
 Buffett suggested that each of them choose one of the dice and then put the rest away. They would then bet on who would roll the highest number of times. Buffett offered Gates the chance to choose the dice first.
 This offer immediately aroused Gates' suspicion. He demanded to examine the dice first, after which he demanded that Buffett choose first.
 
-Fun fact: If you've ever wanted to invite all the guests at [Hilbert's famous hotel]() to roll some dice, here's a guaranteed way for everyone to win.
+Fun fact: If you've ever wanted to invite all the guests at [Hilbert's famous hotel](https://en.wikipedia.org/wiki/Hilbert%27s_paradox_of_the_Grand_Hotel) to roll some dice, here's a guaranteed way for everyone to win!
 
 Keywords: intransitive dice, nontransitive dice, intransitive cycle, Muñoz-Perera.
