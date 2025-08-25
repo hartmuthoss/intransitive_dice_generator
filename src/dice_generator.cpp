@@ -52,7 +52,55 @@ namespace DiceGenerator
           DoubleDie({{ 4, 4, 11, 11, 18, 18 }, { 4, 4, 11, 11, 18, 18 }}) });
     }
 
-    // Create a matrix of intransitive dice values using  Muñoz-Perera's formula for N>=3 (https://en.wikipedia.org/wiki/Intransitive_dice): 
+    // Create a matrix of intransitive dice values using the algorithm by Erika Clary and Dr. Verne Leininger, 
+    // "Proving Pairwise Intransitivity in Sets of Dice", https://digitalcommons.bridgewater.edu/cgi/viewcontent.cgi?article=1025&context=honors_projects: 
+    // d_mn = [ n,n,...,n  , n+m,n+m,...,n+m ]
+    //         (n+1 times)   (m-n-1 times)
+    // where 0<=n<m, m>=3, and m denotes the number of dice in the set and the number of faces on each die, while n denotes the name of the die that is being rolled.
+    // Example with d_5,4 > d_5,3 > d_5,2 > d_5,1 > d_5,0 > d_5,4:
+    //  d_5,0 = [0,5,5,5,5]
+    //  d_5,1 = [1,1,6,6,6]
+    //  d_5,2 = [2,2,2,7,7]
+    //  d_5,3 = [3,3,3,3,8]
+    //  d_5,4 = [4,4,4,4,4]
+    std::vector<std::vector<DieValueT>> clary_leininger_matrix(int N)
+    {
+        assert(N >= 3);
+        std::vector<std::vector<DieValueT>> matrix(N);
+        for (int n = 0; n < N; n++)
+        {
+            matrix[n] = std::vector<DieValueT>(N, n + N);
+            for (int i = 0; i < n + 1; i++)
+            {
+                matrix[n][i] = n;
+            }
+        }
+        return matrix;
+    }
+
+    // Create a matrix of intransitive dice values using the algorithm by Erika Clary and Dr. Verne Leininger, see clary_leininger_matrix.
+    DiceSet clary_leininger(int N)
+    {
+        std::vector<std::vector<DieValueT>> matrix = clary_leininger_matrix(N);
+        std::vector<Die> dice(N);
+        for (int n = 0; n < N; n++)
+            dice[n] = Die(matrix[n]);
+        return DiceSet("Clary Leininger " + std::to_string(N) + "-sided dice", dice);
+    }
+
+    // Create an intransitive path for dice created by clary_leininger(N).
+    // Example: clary_leininger_path(6) returns the intransitive path { 5, 4, 3, 2, 1, 0, 5 }
+    DicePath clary_leininger_path(int N)
+    {
+        std::vector<int> path_indices;
+        path_indices.reserve(N + 1);
+        for (int n = N - 1; n >= 0; n--)
+            path_indices.push_back(n);
+        path_indices.push_back(N - 1);
+        return DicePath(path_indices);
+    }
+
+    // Create a matrix of intransitive dice values using Muñoz-Perera's formula for N>=3 (https://en.wikipedia.org/wiki/Intransitive_dice): 
     // "To obtain a set of N fair intransitive dice of N faces it is enough to set the values v_n,j = (j-1)*N+(n-j)%(N)+1 for n,j=1,...,N.
     // Using this expression, it can be verified that P(D_m < D_n) = 0.5 + 1/(2*N) - ((n-m)%N)/(N*N). So each die beats floor(N/2-1) dice in the set."
     // Note: The path { D_N,..., D_2, D_1, D_N } is always intransitive for intransitive Munnoz-Perera dice, since P(D_N > D_(N-1)) > 0.5,..., P(D_2 > D_1) > 0.5, P(D_1 > D_N) > 0.5
@@ -75,7 +123,7 @@ namespace DiceGenerator
         return matrix;
     }
 
-    // Create a set of intransitive dice using  Muñoz-Perera's formula for N>=3 (see function munnoz_perera_matrix).
+    // Create a set of intransitive dice using Muñoz-Perera's formula for N>=3 (see function munnoz_perera_matrix).
     // Examples given in https://pereradrian.github.io/doc/adrian_munnoz_perera_generalized_intransitive_dice_2024.pdf, e.g. for N = 6:
     // D0: [1 12 17 22 27 32]
     // D1: [2  7 18 23 28 33]

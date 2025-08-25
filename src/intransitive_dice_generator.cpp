@@ -212,6 +212,20 @@ int main(int argc, char** argv)
           prompt_warning("## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with " + std::to_string(max_num_dice) + " " + std::to_string(num_dice_sides) + "-sided Munnoz Perera dice", logger);
   }
 
+  // Create long cycles of intransitive dice by extending N N-sided Clary-Leininger dice (N >= 3)
+  for (size_t num_dice_sides = 3; num_dice_sides <= 48; num_dice_sides *= 2)
+  {
+      DiceSet  cl_dice = DiceGenerator::clary_leininger(num_dice_sides);
+      DicePath cl_dice_path = DiceGenerator::clary_leininger_path(num_dice_sides);
+      logger.cout() << cl_dice.print_path_probabilities_x(cl_dice_path, true) << std::endl;
+      DiceSet cl_extended("Extended Clary Leininger " + std::to_string(num_dice_sides) + "-sided dice", {});
+      DicePath cl_extended_path;
+      success = (DiceGenerator::extend_set_by_intransitive_dice_insertion(cl_dice, cl_dice_path, max_num_dice, cl_extended, cl_extended_path, strategy) && cl_extended_path.size() >= max_num_dice);
+      logger.cout() << cl_extended.print_path_probabilities_x(cl_extended_path, true) << std::endl;
+      if (!success)
+          prompt_warning("## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with " + std::to_string(max_num_dice) + " " + std::to_string(num_dice_sides) + "-sided Clary Leininger dice", logger);
+  }
+
   std::chrono::time_point<std::chrono::system_clock> end_time = std::chrono::system_clock::now();
   double seconds = (1.0e-6) * (std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time)).count();
   logger.cout() << "Intransitive dice generator test finished in " << std::fixed << std::setprecision(3) << seconds << " seconds." << std::endl;
