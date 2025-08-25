@@ -140,6 +140,6 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
       * $P(A>C) ≥ (m_L/M + P(A>T) \cdot m_T/M) > 0.5$ and
       * $P(C>B) ≥ (m_H/M + P(B<T) \cdot m_T/M) > 0.5$
 
-9]: $\frac{1}{M} + \frac{1}{2} \cdot \frac{M − 2}{M} = \frac{2 + M − 2}{2 M} = \frac{1}{2}$
+[9]: $\frac{1}{M} + \frac{1}{2} \cdot \frac{M − 2}{M} = \frac{2 + M − 2}{2 M} = \frac{1}{2}$
 
 Keywords: intransitive dice, nontransitive dice, intransitive cycle, Muñoz-Perera.
