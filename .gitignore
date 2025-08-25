@@ -1,2 +1,3 @@
 build_linux/
 build_win64/
+scripts/ssh_ubuntu24hv.cmd

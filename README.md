@@ -24,22 +24,41 @@ This relation seems to remain unchanged, if $N$ $N$-sided Muñoz-Perera dice wit
 
 I have not found a mathematical proof showing that this relationship remains unchanged under partitioning. However, we can easily test this hypothesis through simulation:
 We just need to partition $N$ $N$-sided Muñoz-Perera dice with $N = K * M$ into $N$ dice tuples, each of which has $K$ $M$-sided dice. The process of partioning is straightforward: we simply take $K$ subsets with $M$ elements each. As far as I could test, the path remains intransitive after partitioning. Unfortunately, I lack the mathematical knowledge to prove this hypothesis true. It might be possible to deduce this from the literature.
-If anyone has a proof for all $N$, please let me know. ChatGPT created a [proof sketch](doc/intransitivity_munnoz_perera_partitioning.md).
+If anyone has a formal proof for all $N$, please let me know. ChatGPT created a [proof sketch](doc/intransitivity_munnoz_perera_partitioning.md).
 
 ### Construction of intransitive dice of any cycle length
 
-To construct long intransitive cycles, we start with a set of known intransitive dice and add dice iteratively to that cycle. If we have two dice $D_i$ and $D_{i+1}$ in an intransitive cycle, i.e. $P(D_i>D_{i+1}) > 0.5$, we can construct a third die $D_j$ with $P(D_i>D_j) > 0.5$ and $P(D_j>D_{i+1}) > 0.5$. The algorithm is quite simple:
+To construct long intransitive cycles, we start with a set of known intransitive dice and add dice iteratively to that cycle. If we have two dice $D_i$ and $D_{i+1}$ in an intransitive cycle, i.e. $P(D_i>D_{i+1}) > 0.5$, we can construct a third die $D_j$ with $P(D_i>D_j) > 0.5$ and $P(D_j>D_{i+1}) > 0.5$. 
 
-Let $D_i$ and $D_k$ be two $M$-sided dice with $P(D_i>D_k) > 0.5$, where $D_i[m]$ is the m-th value of die $D_i$ and
+The first algorithm is quite simple:
+* Let $D_i$ and $D_k$ be two $M$-sided dice with $P(D_i>D_k) > 0.5$, where $D_i[m]$ is the m-th value of die $D_i$ and
 $D_k[m]$ is the m-th value of die $D_k$, with $0 ≤ m < M$ for $M$-sided dice. A new die $D_j$ can then be constructed with $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$:
-* If $D_i[m] > D_k[m]$, then $D_j[m] < D_i[m]$ to ensure that $D_i$ beats $D_j$. We choose $D_j[m] = ⌊(D_i[m] + D_k[m]) / 2⌋$.
-* If $D_i[m] < D_k[m]$, then $D_j[m] > D_k[m]$ to ensure that $D_j$ beats $D_k$. We choose $D_j[m] = D_k[m] + 1$.
+   * If $D_i[m] > D_k[m]$, then $D_j[m] < D_i[m]$ to ensure that $D_i$ beats $D_j$. We choose $D_j[m] = D_i[m] - 1$.
+   * If $D_i[m] < D_k[m]$, then $D_j[m] > D_k[m]$ to ensure that $D_j$ beats $D_k$. We choose $D_j[m] = D_k[m] + 1$.
+* If the difference between two dice values is too small to generate a new die in the cycle, we simply multiply all dice values by a constant factor greater than one, for example by a factor of two. Multiplying all dice values by a constant factor or adding a constant offset to all values does not change the probabilities of the dice.
+* This simple algorithm works for surprisingly many dice, but is not bullet-proof. Counter examples exist.
 
-We repeat this process iteratively until the cycle length reaches the desired limit. If the difference between two dice values is too small to identify a new die in the cycle, we simply multiply all dice values by a constant factor greater than one, for example by a factor of two. Multiplying all dice values by a constant factor or adding a constant offset to all values does not change the probabilities of the dice. This enables us to enlarge a given intransitive cycle by adding new dice ad infinitum. As far as I could test, this simple algorithm can easily generate millions of intransitive dice, starting with six-sided Oskar dice, Grime dice or $M$-sided Muñoz-Perera dice (or probably with any other intransitive dice).
+The second algorithm uses a 3-level insertion:
+* A new die $D_j$ with $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$ is constructed from 3 different values: 
+   * a low value $L < min(D_i, D_k)$,
+   * a high value $H > max(D_i, D_k)$,
+   * a threshold value $T$ computed from the cumulative probability distribution of $D_i$ and $D_k$, see [3-level insertion](doc/construction_of_N_intransitive_M_sided_dice.md) for details.
+* To convert reell face values to integer, we multiply all dice values by a constant factor greater than one and cast the result. If the factor is large enough, the resulting integer dice will still hold $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$.
+* To my knowledge, the 3-level insertion is bullet-proof and works on all dice with $P(D_i>D_k) > 0.5$.
+
+We repeat this process iteratively until the cycle length reaches the desired limit. This enables us to enlarge a given intransitive cycle by adding new dice ad infinitum. As far as I could test, we can easily generate millions of intransitive dice in this way, starting with six-sided Oskar dice, Grime dice or $M$-sided Muñoz-Perera dice (or probably with any other intransitive dice).
 
 **Conjecture: For any fixed values of $N$ and $M$ greater than $2$, there exist sets of $N$ $M$-sided dice forming a strict intransitive cycle.**
 
-Again, I do not have a direct proof of this conjecture. A proof might be deducable from the literature. ChatGPT created a [proof sketch](doc/intransitivity_fixed_M_arbitrary_cycle.md).
+The conjecture matches Alex Schaefers theorem proven in [Balanced Non-Transitive Dice II: Tournaments](https://arxiv.org/pdf/1706.08986):
+
+> Theorem 2.1. For any n,m ≥ 3, there exists a non-transitive set of n balanced m-sided dice.
+
+It also matches the [central limit theorem for intransitive dice](https://arxiv.org/pdf/2310.17083) by Luis G. Coelho, Tertuliano Franco, Lael V. Lima, João P.C. de Paula, João V.A. Pimenta, Guilherme L.F. Silva and Daniel Ungaretti:
+
+> Theorem 1. Consider dice whose face entries are positive integers. For every ℓ ≥ 3 and n ≥ 3 there exists a no-tie collection of ℓ honest n-sided dice which is intransitive.
+
+However, I provided my own [proof sketch](doc/construction_of_N_intransitive_M_sided_dice.md) as an exercise. The sketch comes without any warranty, since I am not a mathematican. A proof might also be deducable from the literature. ChatGPT created another [proof sketch](doc/intransitivity_fixed_M_arbitrary_cycle.md).
 
 ## Examples
 
@@ -75,17 +94,17 @@ P(D29>D28) = 0.525, P(D28>D27) = 0.523, ..., P(D4>D3) = 0.523, P(D3>D2) = 0.522,
 ```
 ```
 Extended Oskar dice:
-  D00: (  129 129 1665 1665 2049 2049 )
-  D01: (  1152 1152 1664 1664 2048 2048 )
-  D02: (  1151 1151 1663 1663 2047 2047 )
-  D03: (  1149 1149 1661 1661 2045 2045 )
-  D04: (  1147 1147 1659 1659 2043 2043 )
+  D00: (  257 257 3329 3329 4097 4097 )
+  D01: (  2048 2048 3328 3328 4096 4096 )
+  D02: (  2047 2047 3327 3327 4095 4095 )
+  D03: (  2045 2045 3325 3325 4093 4093 )
+  D04: (  2043 2043 3323 3323 4091 4091 )
   ...
-  D995: (  149 149 1685 1685 2049 2049 )
-  D996: (  145 145 1681 1681 2049 2049 )
-  D997: (  141 141 1677 1677 2049 2049 )
-  D998: (  137 137 1673 1673 2049 2049 )
-  D999: (  133 133 1669 1669 2049 2049 )
+  D995: (  277 277 3349 3349 4097 4097 )
+  D996: (  273 273 3345 3345 4097 4097 )
+  D997: (  269 269 3341 3341 4097 4097 )
+  D998: (  265 265 3337 3337 4097 4097 )
+  D999: (  261 261 3333 3333 4097 4097 )
 P(D0>D1) = 0.556, P(D1>D2) = 0.667, P(D2>D3) = 0.667, P(D3>D4) = 0.667, ..., P(D995>D996) = 0.556, P(D996>D997) = 0.556, P(D997>D998) = 0.556, P(D998>D999) = 0.556, P(D999>D0) = 0.556 (intransitive path)
 ```
 ```
@@ -148,24 +167,29 @@ Dice operations that leave intransitivity invariant:
 
 Articles and scientific literature:
 
-* Wikipedia: https://en.wikipedia.org/wiki/Intransitive_dice
-* Adrian Muñoz-Perera, "A generalization of intransitive dice": https://pereradrian.github.io/doc/adrian_munnoz_perera_generalized_intransitive_dice_2024.pdf
-* Ethan Akin, Julia Saccamano, "Generalized Intransitive Dice II: Partition Constructions": https://arxiv.org/pdf/1905.01750
-* Erika Clary, Dr. Verne Leininger, "Proving Pairwise Intransitivity in Sets of Dice": https://digitalcommons.bridgewater.edu/cgi/viewcontent.cgi?article=1025&context=honors_projects
-* Coelho, Franco, Lima, Paula, Pimenta, Silva, Ungaretti, "A Central Limit Theorem for intransitive dice": https://arxiv.org/pdf/2310.17083
-* Conrey, Gabbard, Grant, Liu, Morrison, "Intransitive Dice": https://aimath.org/~morrison/Research/IntransitiveDice.pdf
-* Ashwin Sah, Mehtaab Sawhney, "The intransitive dice kernel": https://dspace.mit.edu/bitstream/handle/1721.1/153985/440_2024_Article_1270.pdf?isAllowed=y&sequence=1
-* Joe Buhler, Ron Graham, Al Hales, "Maximally Nontransitive Dice": https://mathweb.ucsd.edu/~ronspubs/18_01_nontransitive.pdf
-* Artem Hulko, Mark Whitmeyer, "A Game of Nontransitive Dice": https://www.researchgate.net/publication/317356505_A_Game_of_Nontransitive_Dice
-* Alex Schaefer, "Balanced Non-Transitive Dice II: Tournaments": https://arxiv.org/pdf/1706.08986
-* Levi Angel, Matt Davis, "A Direct Construction of Non-Transitive Dice Sets": https://arxiv.org/pdf/1610.08595
-* Deszo Bednay, Sandor Bozoki, "Constructions for Nontransitive Dice Sets": https://eprints.sztaki.hu/7623/1/Bednay_15_2507773_ny.pdf
+* Wikipedia: "Intransitive dice", https://en.wikipedia.org/wiki/Intransitive_dice
+* Adrian Muñoz-Perera: "A generalization of intransitive dice": https://pereradrian.github.io/doc/adrian_munnoz_perera_generalized_intransitive_dice_2024.pdf
+* Ethan Akin, Julia Saccamano: "Generalized Intransitive Dice II: Partition Constructions": https://arxiv.org/pdf/1905.01750
+* Erika Clary, Dr. Verne Leininger: "Proving Pairwise Intransitivity in Sets of Dice": https://digitalcommons.bridgewater.edu/cgi/viewcontent.cgi?article=1025&context=honors_projects
+* Coelho, Franco, Lima, Paula, Pimenta, Silva, Ungaretti: "A Central Limit Theorem for intransitive dice", https://arxiv.org/pdf/2310.17083
+* Conrey, Gabbard, Grant, Liu, Morrison: "Intransitive Dice", https://aimath.org/~morrison/Research/IntransitiveDice.pdf
+* Ashwin Sah, Mehtaab Sawhney: "The intransitive dice kernel", https://dspace.mit.edu/bitstream/handle/1721.1/153985/440_2024_Article_1270.pdf?isAllowed=y&sequence=1
+* Joe Buhler, Ron Graham, Al Hales: "Maximally Nontransitive Dice", https://mathweb.ucsd.edu/~ronspubs/18_01_nontransitive.pdf
+* Artem Hulko, Mark Whitmeyer: "A Game of Nontransitive Dice", https://www.researchgate.net/publication/317356505_A_Game_of_Nontransitive_Dice
+* Alex Schaefer: "Balanced Non-Transitive Dice II: Tournaments", https://arxiv.org/pdf/1706.08986
+* Levi Angel, Matt Davis: "A Direct Construction of Non-Transitive Dice Sets", https://arxiv.org/pdf/1610.08595
+* Deszo Bednay, Sandor Bozoki: "Constructions for Nontransitive Dice Sets", https://eprints.sztaki.hu/7623/1/Bednay_15_2507773_ny.pdf
 
 An anecdote from https://no.wikipedia.org/wiki/Ikketransitive_terninger:
 
+> "Warren Buffett er kjent som fan av ikketransitive terninger... Buffett prøvde en gang å vinne et slags terningspill mot Bill Gates ved å bruke ikketransitive terninger.
+> 'Buffett foreslo at hver av dem valgte en av terningene, for så å legge bort resten. De vil så vedde om hvem som kaster høyest flest ganger. Buffett tilbød Gates å velge terning først.
+> Dette tilbudet vakte med en gang Gates mistenksomhet. Han krevde å først få undersøke terningene, hvoretter han krevde at Buffett velger først.'"
+
 Warren Buffett is known to be a fan of non-transitive dice... Buffett once tried to win a dice game against Bill Gates by using non-transitive dice.
 Buffett suggested that each of them choose one of the dice and then put the rest away. They would then bet on who would roll the highest number of times. Buffett offered Gates the chance to choose the dice first.
-This offer immediately aroused Gates' suspicion. He demanded to examine the dice first, after which he demanded that Buffett choose first.  
-("Warren Buffett er kjent som fan av ikketransitive terninger... Buffett prøvde en gang å vinne et slags terningspill mot Bill Gates ved å bruke ikketransitive terninger.
-'Buffett foreslo at hver av dem valgte en av terningene, for så å legge bort resten. De vil så vedde om hvem som kaster høyest flest ganger. Buffett tilbød Gates å velge terning først.
-Dette tilbudet vakte med en gang Gates mistenksomhet. Han krevde å først få undersøke terningene, hvoretter han krevde at Buffett velger først.'")
+This offer immediately aroused Gates' suspicion. He demanded to examine the dice first, after which he demanded that Buffett choose first.
+
+Fun fact: If you've ever wanted to invite all the guests at [Hilbert's famous hotel]() to roll some dice, here's a guaranteed way for everyone to win.
+
+Keywords: intransitive dice, nontransitive dice, intransitive cycle, Muñoz-Perera.

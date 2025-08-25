@@ -9,6 +9,7 @@ include_directories(src)
 add_library(${PROJECT_NAME}_lib STATIC
     src/dice.cpp
     src/dice_generator.cpp
+    src/dice_unittest.cpp
     src/dice_util.cpp
 )
 

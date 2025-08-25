@@ -73,22 +73,41 @@ namespace DiceGenerator
 	// Create a random list of DoubleDiceSets from a 12x12-matrix of Munnoz-Perera dice values
 	std::vector<DoubleDiceSet> create_random_double_dice_sets_from_12x12(int num_sets);
 
+	// Algorithm for find_die_between_two_others: simple or 3-level-insertion (default)
+	enum FindDieStrategy 
+	{ 
+		SIMPLE,                // Simple die finding by find_die_between_two_others_simple(), simple and fast for many dice, but may fail (counter examples exist)
+		THREE_LEVEL_INSERTION  // Default: 3 level insertion by find_die_between_two_others_3_level_insertion
+	};
+
+	// Tries to find a die die_j "between" two dice die_i and die_k with P(die_i>die_j) > 0.5 && P(die_j>die_k) > 0.5.
+	Die find_die_between_two_others(Die& die_i, Die& die_k, FindDieStrategy strategy = FindDieStrategy::THREE_LEVEL_INSERTION);
+
+	// Searches for a die die_j "between" two dice die_i and die_k with P(die_i>die_j) > 0.5 && P(die_j>die_k) > 0.5.
+	// Let die_i and die_k be two N-sided dice with P(die_i>die_k) > 0.5, where die_i[n] is the n-th value of die_i and
+	// die_k[n] is the n-th value of die_k, with 0 <= n < N for N-sided dice. 
+	// This function uses a 3-level insertion algorithm and assumes P(die_i>die_k) > 0.5.
+	Die find_die_between_two_others_3_level_insertion(Die& die_i, Die& die_k);
+
 	// Tries to find a die die_j "between" two dice die_i and die_k with P(die_i>die_j) > 0.5 && P(die_j>die_k) > 0.5.
 	// Let die_i and die_k be two N-sided dice with P(die_i>die_k) > 0.5, where die_i[n] is the n-th value of die_i and
 	// die_k[n] is the n-th value of die_k, with 0 <= n < N for N-sided dice. This function uses a simple algorithm:
-	// If die_i[n] > die_k[n], die_j[n] can be smaller than die_i[n] to ensure that die_i beats die_j. We choose die_j[n] = (die_i[n] + die_k[n]) / 2.
+	// If die_i[n] > die_k[n], die_j[n] can be smaller than die_i[n] to ensure that die_i beats die_j. We choose die_j[n] = die_i[n] - 1, or die_j[n] = (die_i[n] + die_k[n]) / 2.
 	// If die_i[n] < die_k[n], die_j[n] can be greater than die_k[n] to ensure that die_j beats die_k. We choose die_j[n] = die_k[n] + 1.
-	Die find_die_between_two_others(Die& die_i, Die& die_k);
+	// This solution is simple and fast and works for a a lot of dice, but not for all dice.
+	Die find_die_between_two_others_simple(Die& die_i, Die& die_k);
 
 	// Iteratively insert new dice D_j between D_i and D_(i+1), such that P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5.
 	// Start with a given set of dice and a given intransitive path, and repeat the process until
 	// the given max. number of dice are reached, or no new dice D_j can be found.
 	// If initial_dice_path is intransitive, extended_dice_path will also be intransitive
-	bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, DiceLogger* logger = 0);
+	bool extend_set_by_intransitive_dice_insertion(const DiceSet& initial_dice_set, const DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path, 
+		FindDieStrategy strategy = FindDieStrategy::THREE_LEVEL_INSERTION, int max_iterations = 2, DiceLogger* logger = 0);
 
 	// Insert new dice D_j between D_i and D_(i+1), such that P(D_i > D_j) > 0.5 and P(D_j > D_(i+1)) > 0.5, 
 	// once with all dice in the dice set, until the given max. number of dice are reached, or no new dice D_j can be found.
 	// If initial_dice_path is intransitive, extended_dice_path will also be intransitive
-	bool extend_set_by_intransitive_dice_insertion_once(DiceSet& initial_dice_set, DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path);
+	bool extend_set_by_intransitive_dice_insertion_once(DiceSet& initial_dice_set, DicePath& initial_dice_path, size_t max_num_dice, DiceSet& extended_dice_set, DicePath& extended_dice_path,
+		FindDieStrategy strategy = FindDieStrategy::THREE_LEVEL_INSERTION);
 
 } // namespace DiceGenerator

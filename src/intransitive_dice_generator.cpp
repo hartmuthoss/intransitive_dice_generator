@@ -1,8 +1,10 @@
 ﻿// Generator for intransitiv dice.
 // See https://en.wikipedia.org/wiki/Intransitive_dice and README.md for details.
+#include <chrono>
 #include "dice.h"
 #include "dice_generator.h"
 #include "dice_logger.h"
+#include "dice_unittest.h"
 
 // Prints description and commandline options
 std::string print_help(void)
@@ -11,9 +13,17 @@ std::string print_help(void)
     str << "intransitive_dice_generator generates intransitive dice. See https://github.com/hartmuthoss/intransitive_dice_generator for details." << std::endl;
     str << "By default (i.e.no command line options given), intransitive_dice_generator creates and prints examples of intransitive dice with different cycle lengths." << std::endl;
     str << "To create a chain of N intransitive M-sided dice with N>=M, call intransitive_dice_generator with arguments -N=<int> -M=<int>." << std::endl;
-    str << "Example: \"intransitive_dice_generator -N=12 -M=6\" creates 12 intransitive 6 - sided dice." << std::endl;
+    str << "Example: \"intransitive_dice_generator -N=12 -M=6\" creates 12 intransitive six-sided dice." << std::endl;
     str << "All messages are logged in file intransitive_dice_generator.log." << std::endl;
     return str.str();
+}
+
+// Prints a warning message and waits for ENTER
+void prompt_warning(const std::string& error_msg, DiceLogger& logger)
+{
+    logger.cerr() << error_msg << std::endl << std::endl;
+    logger.cerr() << "## Press ENTER to continue..." << std::endl;
+    getchar();
 }
 
 // Print dice die_i, die_j, die_k and their probabilities P(Di>Dk), P(Di>Dj), P(Dj>Dk).
@@ -60,12 +70,19 @@ int main(int argc, char** argv)
   int N = 0, M = 0;
   if (DiceUtil::has_cli_arg(argc, argv, "-N=", N) && DiceUtil::has_cli_arg(argc, argv, "-M=", M) && N >= 3 && M >= 3)
   {
+    DiceGenerator::FindDieStrategy strategy = DiceGenerator::FindDieStrategy::THREE_LEVEL_INSERTION; // 3 level insertion by find_die_between_two_others_3_level_insertion
+    if (DiceUtil::has_cli_arg(argc, argv, "-simple"))
+      strategy = DiceGenerator::FindDieStrategy::SIMPLE;
+    else if (DiceUtil::has_cli_arg(argc, argv, "-3-level"))
+      strategy = DiceGenerator::FindDieStrategy::THREE_LEVEL_INSERTION;
+    else if (N > 10000) // 3 level insertion can become timeconsuming for intransitive cycles of more than 10000 dice. In this case, a simple search by find_die_between_two_others_simple
+      strategy = DiceGenerator::FindDieStrategy::SIMPLE; // can be an alternative (simple and fast for many dice, but may fail, counter examples exist).
     // Create N intransitive M-sided dice for given N and M by extending N N-sided Munnoz-Perera dice
     DiceSet  mp_dice = DiceGenerator::munnoz_perera(M);
     DicePath mp_dice_path = DiceGenerator::munnoz_perera_path(M);
     DiceSet mp_extended("Extended Munnoz Perera " + std::to_string(M) + "-sided dice", {});
     DicePath mp_extended_path;
-    bool success = DiceGenerator::extend_set_by_intransitive_dice_insertion(mp_dice, mp_dice_path, N, mp_extended, mp_extended_path);
+    bool success = DiceGenerator::extend_set_by_intransitive_dice_insertion(mp_dice, mp_dice_path, N, mp_extended, mp_extended_path, strategy);
     if (success)
       logger.cout() << mp_extended.print_path_probabilities_x(mp_extended_path, true) << std::endl;
     else
@@ -78,8 +95,13 @@ int main(int argc, char** argv)
     exit(EXIT_SUCCESS);
   }
 
+  // Unit test
+  if (!DiceUnittest::run(logger))
+      prompt_warning("## WARNING: dice unittest faild", logger);
+
   // Create some well known examples of intransitive dice
   logger.cout() << "Intransitive dice generator test started." << std::endl << std::endl;
+  std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
   std::vector<DiceSet> dice_sets = {
     DiceGenerator::efron(),
     DiceGenerator::miwin(),
@@ -157,10 +179,13 @@ int main(int argc, char** argv)
   DiceSet oskar_extended("Extended Oskar dice", {});
   DicePath oskar_extended_path;
   size_t max_num_dice = 1000; // Tested with up to 10 million dice - feel free to create intransitive cycles with as many dice as desired.
-  if (DiceGenerator::extend_set_by_intransitive_dice_insertion(oskar_dice, oskar_dice_path, max_num_dice, oskar_extended, oskar_extended_path))
+  DiceGenerator::FindDieStrategy strategy = DiceGenerator::FindDieStrategy::THREE_LEVEL_INSERTION; // 3 level insertion by find_die_between_two_others_3_level_insertion
+  if (max_num_dice > 10000) // 3 level insertion can become timeconsuming for intransitive cycles of more than 10000 dice. In this case, a simple search by find_die_between_two_others_simple
+    strategy = DiceGenerator::FindDieStrategy::SIMPLE; // can be an alternative (simple and fast for many dice, but may fail, counter examples exist).
+  bool success = (DiceGenerator::extend_set_by_intransitive_dice_insertion(oskar_dice, oskar_dice_path, max_num_dice, oskar_extended, oskar_extended_path, strategy) && oskar_extended_path.size() >= max_num_dice);
       logger.cout() << oskar_extended.print_path_probabilities_x(oskar_extended_path, true) << std::endl;
-  else
-      logger.cerr() << "## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with oskar dice" << std::endl << std::endl;
+  if (!success)
+      prompt_warning("## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with oskar dice", logger);
 
   // Create long cycles of intransitive dice by extending Grime dice
   DiceSet grime_dice = DiceGenerator::grime();
@@ -168,11 +193,10 @@ int main(int argc, char** argv)
   logger.cout() << grime_dice.print_path_probabilities_x(grime_dice_path, true) << std::endl;
   DiceSet grime_extended("Extended Grime dice", {});
   DicePath grime_extended_path;
-  if (DiceGenerator::extend_set_by_intransitive_dice_insertion(grime_dice, grime_dice_path, max_num_dice, grime_extended, grime_extended_path))
-      logger.cout() << grime_extended.print_path_probabilities_x(grime_extended_path, true) << std::endl;
-  else
-      logger.cerr() << "## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with grime dice" << std::endl << std::endl;
-
+  success = (DiceGenerator::extend_set_by_intransitive_dice_insertion(grime_dice, grime_dice_path, max_num_dice, grime_extended, grime_extended_path, strategy) && grime_extended_path.size() >= max_num_dice);
+  logger.cout() << grime_extended.print_path_probabilities_x(grime_extended_path, true) << std::endl;
+  if (!success)
+      prompt_warning("## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with grime dice", logger);
 
   // Create long cycles of intransitive dice by extending N N-sided Munnoz-Perera dice (N >= 3)
   for (size_t num_dice_sides = 3; num_dice_sides <= 48; num_dice_sides *= 2)
@@ -182,12 +206,14 @@ int main(int argc, char** argv)
       logger.cout() << mp_dice.print_path_probabilities_x(mp_dice_path, true) << std::endl;
       DiceSet mp_extended("Extended Munnoz Perera " + std::to_string(num_dice_sides) + "-sided dice", {});
       DicePath mp_extended_path;
-      if (DiceGenerator::extend_set_by_intransitive_dice_insertion(mp_dice, mp_dice_path, max_num_dice, mp_extended, mp_extended_path))
-          logger.cout() << mp_extended.print_path_probabilities_x(mp_extended_path, true) << std::endl;
-      else
-          logger.cerr() << "## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with " << num_dice_sides << " " << num_dice_sides << "-sided Munnoz Perera dice" << std::endl << std::endl;
+      success = (DiceGenerator::extend_set_by_intransitive_dice_insertion(mp_dice, mp_dice_path, max_num_dice, mp_extended, mp_extended_path, strategy) && mp_extended_path.size() >= max_num_dice);
+      logger.cout() << mp_extended.print_path_probabilities_x(mp_extended_path, true) << std::endl;
+      if (!success)
+          prompt_warning("## WARNING: DiceGenerator::extend_set_by_intransitive_dice_insertion() failed with " + std::to_string(max_num_dice) + " " + std::to_string(num_dice_sides) + "-sided Munnoz Perera dice", logger);
   }
 
-  logger.cout() << "Intransitive dice generator test finished." << std::endl;
+  std::chrono::time_point<std::chrono::system_clock> end_time = std::chrono::system_clock::now();
+  double seconds = (1.0e-6) * (std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time)).count();
+  logger.cout() << "Intransitive dice generator test finished in " << std::fixed << std::setprecision(3) << seconds << " seconds." << std::endl;
   return 0;
 }

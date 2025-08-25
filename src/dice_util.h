@@ -8,11 +8,23 @@
 
 namespace DiceUtil
 {
+    // Cumulative distribution function: return the probability P(x<t), i.e. sum of all values below or equal threshold t divided by number of elements
+    template <typename T> double cdf(const std::vector<T>& X, double t);
+
+    // Appends value x n-times to vector X
+    template <typename T> void append(std::vector<T>& X, const T& x, size_t n);
+      
+    // Returns P(A>B)
+    template <typename A_type, typename B_type> double probability_to_beat(const std::vector<A_type>& A, const std::vector<B_type>& B);
+
     // Returns true, if a given number is a prime
     bool is_prime(size_t number);
 
     // Returns true, if a given string is a palindrome
     bool is_palindrome(const std::string& str);
+
+    // Checks given commandline arguments for an option
+    bool has_cli_arg(int argc, char** argv, const std::string& arg_name);
 
     // Checks given commandline arguments for arg_name. If found, arg_value is set and true returned; otherwise just false is returned. 
     bool has_cli_arg(int argc, char** argv, const std::string& arg_name, int& arg_value);

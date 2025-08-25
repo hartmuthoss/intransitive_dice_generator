@@ -43,7 +43,7 @@ double Die::probability_to_beat(Die& other)
     size_t beat_cnt = 0;
     for (size_t n = 0; n < this_values.size(); n++)
         for (size_t m = 0; m < other_values.size() && this_values[n] > other_values[m]; m++)
-            beat_cnt++; // This die side beats the others die side. Note: values are sorted in ascending order, so we can break at first this_values[n] <= other_values[m]
+            beat_cnt++; // This die side beats the others die side. Note: values are sorted in ascending order, so we can break at first this_values[n] <= other_values[m], since other_values[m+i] >= other_values[m] for all i > 0
     return (double)beat_cnt / (double)(this_values.size() * other_values.size());
 }
 
