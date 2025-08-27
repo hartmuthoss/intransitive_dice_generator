@@ -2,8 +2,8 @@
 title: Preservation of Intransitivity under Tuple Partitioning of Muñoz–Perera Dice
 layout: default
 permalink: docs/intransitivity_munnoz_perera_partitioning.md
-[HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/docs/intransitivity_munnoz_perera_partitioning.html)
 ---
+[HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/docs/intransitivity_munnoz_perera_partitioning.html)
 
 # Preservation of Intransitivity under Tuple Partitioning of Muñoz–Perera Dice
 

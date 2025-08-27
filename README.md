@@ -2,8 +2,8 @@
 title: Intransitive dice generation
 layout: default
 permalink: README.md
-[HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/README.html)
 ---
+[HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/README.html)
 
 # Intransitive dice generation
 
