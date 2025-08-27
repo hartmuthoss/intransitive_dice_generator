@@ -1,3 +1,8 @@
+---
+title: Arbitrarily Long Intransitive Cycles with a Fixed Number of Sides
+layout: default
+---
+
 # Arbitrarily Long Intransitive Cycles with a Fixed Number of Sides (Proof Sketch by ChatGPT)
 
 **Authors:** Hartmut Hoss (Empirical discovery & code) and ChatGPT (OpenAI, proof outline)  

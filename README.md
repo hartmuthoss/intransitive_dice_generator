@@ -1,3 +1,8 @@
+---
+title: Intransitive dice generation
+layout: default
+---
+
 # Intransitive dice generation
 
 **_or how to roll dice at Hilbert's hotel_**

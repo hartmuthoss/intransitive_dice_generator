@@ -1,3 +1,8 @@
+---
+title: Preservation of Intransitivity under Tuple Partitioning of Muñoz–Perera Dice
+layout: default
+---
+
 # Preservation of Intransitivity under Tuple Partitioning of Muñoz–Perera Dice
 
 **Authors:** Hartmut Hoss (Empirical discovery & code) and ChatGPT (OpenAI, proof outline)  
