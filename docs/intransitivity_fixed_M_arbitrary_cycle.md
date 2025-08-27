@@ -1,7 +1,7 @@
 ---
 title: Arbitrarily Long Intransitive Cycles with a Fixed Number of Sides
 layout: default
-permalink: docs/intransitivity_fixed_M_arbitrary_cycle.md
+permalink: docs/intransitivity_fixed_M_arbitrary_cycle.html
 ---
 [HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/docs/intransitivity_fixed_M_arbitrary_cycle.html)
 

@@ -1,7 +1,7 @@
 ---
 title: Intransitive dice generation
 layout: default
-permalink: README.md
+permalink: README.html
 ---
 [HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/README.html)
 

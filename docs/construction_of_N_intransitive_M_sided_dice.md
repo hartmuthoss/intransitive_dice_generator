@@ -1,7 +1,7 @@
 ---
 title: Construction of N intransitive M-sided dice (3-level insertion)
 layout: default
-permalink: docs/construction_of_N_intransitive_M_sided_dice.md
+permalink: docs/construction_of_N_intransitive_M_sided_dice.html
 ---
 [HTML-View](https://hartmuthoss.github.io/intransitive_dice_generator/docs/construction_of_N_intransitive_M_sided_dice.html)
 
