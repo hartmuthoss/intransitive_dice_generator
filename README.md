@@ -26,7 +26,7 @@ This relation seems to remain unchanged, if $N$ $N$-sided Muñoz-Perera dice wit
 
 I have not found a mathematical proof showing that this relationship remains unchanged under partitioning. However, we can easily test this hypothesis through simulation:
 We just need to partition $N$ $N$-sided Muñoz-Perera dice with $N = K \cdot M$ into $N$ dice tuples, each of which has $K$ $M$-sided dice. The process of partioning is straightforward: we simply take $K$ subsets with $M$ elements each. As far as I could test, the path remains intransitive after partitioning. Unfortunately, I lack the mathematical knowledge to prove this hypothesis true. It might be possible to deduce this from the literature.
-If anyone has a formal proof for all $N$, please let me know. ChatGPT created a [proof sketch](doc/intransitivity_munnoz_perera_partitioning.md).
+If anyone has a formal proof for all $N$, please let me know. ChatGPT created a [proof sketch](docs/intransitivity_munnoz_perera_partitioning.md).
 
 ### Construction of intransitive dice of any cycle length
 
@@ -44,7 +44,7 @@ The second algorithm uses a 3-level insertion:
 * A new die $D_j$ with $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$ is constructed from 3 different values: 
    * a low value $L < min(D_i, D_k)$,
    * a high value $H > max(D_i, D_k)$,
-   * a threshold value $T$ computed from the cumulative probability distribution of $D_i$ and $D_k$, see [3-level insertion](doc/construction_of_N_intransitive_M_sided_dice.md) for details.
+   * a threshold value $T$ computed from the cumulative probability distribution of $D_i$ and $D_k$, see [3-level insertion](docs/construction_of_N_intransitive_M_sided_dice.md) for details.
 * To convert reell face values to integer, we multiply all dice values by a constant factor greater than one and cast the result. If the factor is large enough, the resulting integer dice will still hold $P(D_i>D_j) > 0.5$ and $P(D_j>D_k) > 0.5$.
 * To my knowledge, the 3-level insertion is bullet-proof and works on all dice with $P(D_i>D_k) > 0.5$.
 
@@ -60,7 +60,7 @@ It also matches the [central limit theorem for intransitive dice](https://arxiv.
 
 > Theorem 1. Consider dice whose face entries are positive integers. For every ℓ ≥ 3 and n ≥ 3 there exists a no-tie collection of ℓ honest n-sided dice which is intransitive.
 
-However, I provided my own [proof sketch](doc/construction_of_N_intransitive_M_sided_dice.md) as an exercise. The sketch comes without any warranty, since I am not a mathematican. A proof might also be deducable from the literature. ChatGPT created another [proof sketch](doc/intransitivity_fixed_M_arbitrary_cycle.md).
+However, I provided my own [proof sketch](docs/construction_of_N_intransitive_M_sided_dice.md) as an exercise. The sketch comes without any warranty, since I am not a mathematican. A proof might also be deducable from the literature. ChatGPT created another [proof sketch](docs/intransitivity_fixed_M_arbitrary_cycle.md).
 
 ## Examples
 
@@ -125,7 +125,7 @@ Extended Grime dice:
 P(D0>D1) = 0.667, P(D1>D2) = 0.778, P(D2>D3) = 0.778, P(D3>D4) = 0.778, ..., P(D995>D996) = 0.750, P(D996>D997) = 0.750, P(D997>D998) = 0.750, P(D998>D999) = 0.750, P(D999>D0) = 0.750 (intransitive path)
 ```
 
-Complete examples are given in the [logfile](doc/intransitive_dice_generator.log).
+Complete examples are given in the [logfile](docs/intransitive_dice_generator.log).
 
 ## Build and run
 
