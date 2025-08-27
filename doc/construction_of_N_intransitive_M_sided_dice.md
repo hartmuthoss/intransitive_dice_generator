@@ -1,3 +1,8 @@
+---
+title: Construction of N intransitive M-sided dice (3-level insertion)
+layout: default
+---
+
 # Construction of N intransitive M-sided dice (3-level insertion)
 
 ## Conjecture

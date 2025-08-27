@@ -1,0 +1,6 @@
+title: Intransitive Dice Generator
+theme: minima    # optional, aber bequem
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
