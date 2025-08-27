@@ -1,5 +1,4 @@
 title: Intransitive Dice Generator
-permalink: /:path:output_ext
 theme: minima    # optional, aber bequem
 markdown: kramdown
 kramdown:
