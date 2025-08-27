@@ -1,5 +1,7 @@
 # Intransitive dice generation
 
+**_or how to roll dice at Hilbert's hotel_**
+
 This project generates [intransitiv dice](https://en.wikipedia.org/wiki/Intransitive_dice):
 * pairs of six-sided dice and their sum (six-sided sum dice),
 * tuples of $K$ $M$-sided sum dice,
@@ -16,14 +18,14 @@ The aim is to create dice with intransitive cycles as long as possible by using
 
 ### Partioning Muñoz-Perera dice
 
-Muñoz-Perera's formula for $N ≥ 3$: "To obtain a set of $N$ fair intransitive dice of $N$ faces it is enough to set the values $v_{n,j} = (j - 1) * N + (n - j) mod (N) + 1$ for $n,j=1,...,N$. Using this expression, it can be verified that $P(D_m < D_n) = 0.5 + 1 / (2 * N) - ((n - m) mod (N)) / (N * N)$. So each die beats $⌊N/2-1⌋$ dice in the set."
+Muñoz-Perera's formula for $N ≥ 3$: "To obtain a set of $N$ fair intransitive dice of $N$ faces it is enough to set the values $v_{n,j} = (j - 1) \cdot N + (n - j) mod (N) + 1$ for $n,j=1,...,N$. Using this expression, it can be verified that $P(D_m < D_n) = 0.5 + 1 / (2 \cdot N) - ((n - m) mod (N)) / (N \cdot N)$. So each die beats $⌊N/2-1⌋$ dice in the set."
 
 The path $(D_N,..., D_2, D_1, D_N)$ is always intransitive for those Muñoz-Perera dice, since $P(D_N > D_{N-1}) > 0.5,..., P(D_2 > D_1) > 0.5, P(D_1 > D_N) > 0.5$ for these dice (see ["A generalization of intransitive dice" by Adrian Muñoz-Perera](https://pereradrian.github.io/doc/adrian_munnoz_perera_generalized_intransitive_dice_2024.pdf)).
 
-This relation seems to remain unchanged, if $N$ $N$-sided Muñoz-Perera dice with $N = K * M$ are partitioned into $N$ tuples of $M$-sided dice, where each tuple has $K$ $M$-sided dice and the rolled sum of the $K$ $M$-sided dice in the tuple counts. 
+This relation seems to remain unchanged, if $N$ $N$-sided Muñoz-Perera dice with $N = K \cdot M$ are partitioned into $N$ tuples of $M$-sided dice, where each tuple has $K$ $M$-sided dice and the rolled sum of the $K$ $M$-sided dice in the tuple counts. 
 
 I have not found a mathematical proof showing that this relationship remains unchanged under partitioning. However, we can easily test this hypothesis through simulation:
-We just need to partition $N$ $N$-sided Muñoz-Perera dice with $N = K * M$ into $N$ dice tuples, each of which has $K$ $M$-sided dice. The process of partioning is straightforward: we simply take $K$ subsets with $M$ elements each. As far as I could test, the path remains intransitive after partitioning. Unfortunately, I lack the mathematical knowledge to prove this hypothesis true. It might be possible to deduce this from the literature.
+We just need to partition $N$ $N$-sided Muñoz-Perera dice with $N = K \cdot M$ into $N$ dice tuples, each of which has $K$ $M$-sided dice. The process of partioning is straightforward: we simply take $K$ subsets with $M$ elements each. As far as I could test, the path remains intransitive after partitioning. Unfortunately, I lack the mathematical knowledge to prove this hypothesis true. It might be possible to deduce this from the literature.
 If anyone has a formal proof for all $N$, please let me know. ChatGPT created a [proof sketch](doc/intransitivity_munnoz_perera_partitioning.md).
 
 ### Construction of intransitive dice of any cycle length
@@ -190,6 +192,6 @@ Warren Buffett is known to be a fan of non-transitive dice... Buffett once tried
 Buffett suggested that each of them choose one of the dice and then put the rest away. They would then bet on who would roll the highest number of times. Buffett offered Gates the chance to choose the dice first.
 This offer immediately aroused Gates' suspicion. He demanded to examine the dice first, after which he demanded that Buffett choose first.
 
-Fun fact: If you've ever wanted to invite all the guests at [Hilbert's famous hotel](https://en.wikipedia.org/wiki/Hilbert%27s_paradox_of_the_Grand_Hotel) to roll some dice, here's a guaranteed way for everyone to win!
+Fun fact: If you've ever wanted to invite all the guests at [Hilbert's famous hotel](https://en.wikipedia.org/wiki/Hilbert%27s_paradox_of_the_Grand_Hotel) to roll dice, [here's](https://github.com/hartmuthoss/intransitive_dice_generator) a guaranteed way for everyone to win!
 
 Keywords: intransitive dice, nontransitive dice, intransitive cycle, Muñoz-Perera.
