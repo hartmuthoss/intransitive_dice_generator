@@ -132,7 +132,7 @@ $x ↦ (x−min)/(max−min)$ for all face values $x$. This does not change the 
    * We choose
       * $m_L ≥ max(0, ⌊M/2 - m_T*P(A>T)⌋ + 1)$,
       * $m_H ≥ max(0, ⌊M/2 - m_T*P(B<T)⌋ + 1)$ and
-      * $m_T ∈ \{{1,...,M−1}\}$ such that $m_L+m_H ≤ M-m_T$ (since $P(A>T) + P(B<T) > 1$, such a $m_T$ exists)
+      * $m_T ∈ \lbrace 1,...,M−1 \rbrace$ such that $m_L+m_H ≤ M-m_T$ (since $P(A>T) + P(B<T) > 1$, such a $m_T$ exists)
    * It follows 
       * $m_L/M > 1/2 - P(A>T) \cdot m_T/M$ and
       * $m_H/M > 1/2 - P(B<T) \cdot m_T/M$
