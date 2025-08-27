@@ -9,7 +9,7 @@ permalink: README.html
 
 **_or how to roll dice at Hilbert's hotel_**
 
-This project generates [intransitiv dice](https://en.wikipedia.org/wiki/Intransitive_dice):
+[This project](https://github.com/hartmuthoss/intransitive_dice_generator) generates [intransitiv dice](https://en.wikipedia.org/wiki/Intransitive_dice):
 * pairs of six-sided dice and their sum (six-sided sum dice),
 * tuples of $K$ $M$-sided sum dice,
 * and $N$ intransitive $M$-sided dice for almost any number of $N$ and $M$.
