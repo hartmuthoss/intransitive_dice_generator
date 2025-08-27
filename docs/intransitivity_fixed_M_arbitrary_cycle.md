@@ -1,6 +1,8 @@
 ---
 title: Arbitrarily Long Intransitive Cycles with a Fixed Number of Sides
 layout: default
+permalink: docs/intransitivity_fixed_M_arbitrary_cycle.md
+HTML-View: https://hartmuthoss.github.io/intransitive_dice_generator/docs/intransitivity_fixed_M_arbitrary_cycle.html
 ---
 
 # Arbitrarily Long Intransitive Cycles with a Fixed Number of Sides (Proof Sketch by ChatGPT)
